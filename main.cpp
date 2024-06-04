@@ -13,6 +13,7 @@ int playerY= playerYinicial;
 int mosquito[6][5]; //colunas - ativo, x, y, deslocamento x, deslocamento y
 int raquete[3]={0,0,0};  //colunas - ativo , x, y
 int pontos=0, vidas=3, potenciaDaRaquete=1, contadorMosquitos=0;
+bool pausado = false;
 
 
 void DesenhaBloco(float i, float j){
@@ -285,7 +286,12 @@ void Teclado1(unsigned char key, int x, int y)
 			raquete[2]=playerY;
 			mapa[playerX][playerY]=3;
 		}
-	} 
+	}
+
+	//botão p para pausar
+	if(key == 'p'){
+		pausado ^= true;
+	}
 }
 
 void Teclado2(int key, int x, int y){
@@ -404,6 +410,13 @@ void Explosao(){
 // Função callback chamada pela GLUT a cada intervalo de tempo
 void DinamicaDoJogo(int value)
 {
+	if(pausado){
+		//chamada recursiva para gerar dinamica do jogo
+		glutTimerFunc(500, DinamicaDoJogo,1);   
+		glutPostRedisplay();
+		return;
+	}
+
 	//contagem do tempo da raquete, a explosão acontece em -1
 	if(raquete[0]==-1){
 		raquete[0]=0;
@@ -460,6 +473,11 @@ void DinamicaDoJogo(int value)
 	glutPostRedisplay();
 }
 
+void DesenhaPausado(){
+	glColor3f(1.0f,1.0f,1.0f);
+	glRectf(4.5f, 5.5f, 6.5f, 9.5f);
+	glRectf(8.5f, 5.5f,10.5f, 9.5f);
+}
 
 void DesenhaMapa(){
 	glMatrixMode(GL_MODELVIEW);
@@ -481,8 +499,12 @@ void DesenhaMapa(){
 	DesenhaMosquitos();
 	DesenhaRaquete();
 	DesenhaPersonagem(playerX, playerY);
+	if(pausado){
+		DesenhaPausado();
+	}
 	system("cls");
 	printf("\nPontuacao do jogador: %d", pontos);
+	printf("\nPausado: %d", pausado);
 			
 	glFlush();
 }

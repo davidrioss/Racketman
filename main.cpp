@@ -2,19 +2,28 @@
 #include <stdlib.h>
 #include <GL/glut.h>
 #include <time.h>
+#include <string>
+#include <vector>
+using namespace std;
+
 #define playerXinicial 13
 #define playerYinicial 1
 
-
+enum Estado{
+	menu,
+	gameover,
+	pausado,
+	jogando
+};
 
 int mapa[15][15];
-int playerX= playerXinicial;
-int playerY= playerYinicial;
+int playerX= -1;
+int playerY= -1;
 int mosquito[6][5]; //colunas - ativo, x, y, deslocamento x, deslocamento y
 int raquete[3]={0,0,0};  //colunas - ativo , x, y
 int pontos=0, vidas=3, potenciaDaRaquete=1, contadorMosquitos=0;
-bool pausado = false;
-
+int menuItem = 0;
+Estado estado = menu;
 
 void DesenhaBloco(float i, float j){
 	GLfloat a=i, b=j;
@@ -201,8 +210,9 @@ void DesenhaMosquitos(){
 	}
 }
 
-
-
+void DesenhaPontuacao(){
+	
+}
 
 void InicializaMatriz(){
 	//1=paredes, 2=blocos fixos, 3=raquete, 4=mosquitos, 5=parede bonus, 6=bonus
@@ -265,12 +275,24 @@ void InicializaMatriz(){
 	
 }
 
-void Morreu(){
+void ResetaJogo(){
 	playerX= playerXinicial;
 	playerY= playerYinicial;
-	vidas--;
-	if(!vidas)
-		exit(1);
+	pontos = 0;
+	vidas = 3;
+	InicializaMatriz();
+	estado = jogando;
+}
+
+void Morreu(){
+	if(vidas--){
+		playerX= playerXinicial;
+		playerY= playerYinicial;
+	}else{
+		estado = gameover;
+		playerX = -1;
+		playerY = -1;
+	}
 }
 
 void Teclado1(unsigned char key, int x, int y)
@@ -290,11 +312,29 @@ void Teclado1(unsigned char key, int x, int y)
 
 	//botão p para pausar
 	if(key == 'p'){
-		pausado ^= true;
+		if(estado == pausado)
+			estado = jogando;
+		else if(estado == jogando)
+			estado = pausado;
+	}
+
+	//botão enter para começar
+	if(key == 13){
+		if(estado == menu || estado == gameover){
+			ResetaJogo();
+		}
 	}
 }
 
 void Teclado2(int key, int x, int y){
+	if(estado != jogando){
+		if(key == GLUT_KEY_UP || key == GLUT_KEY_DOWN)
+			menuItem = !menuItem;
+		
+		glutPostRedisplay();
+		return;
+	}
+
 
 	if(key == GLUT_KEY_LEFT)
 	{
@@ -354,13 +394,9 @@ void Teclado2(int key, int x, int y){
 		}
 	}                    
 	
-	//reiniciar
+	
 	if (key == GLUT_KEY_HOME){
-		playerX= playerXinicial;
-		playerY= playerYinicial;
-		pontos = 0;
-		vidas = 3;
-		InicializaMatriz();
+		ResetaJogo();
 	}
 	                                   
 	glutPostRedisplay();
@@ -410,7 +446,7 @@ void Explosao(){
 // Função callback chamada pela GLUT a cada intervalo de tempo
 void DinamicaDoJogo(int value)
 {
-	if(pausado){
+	if(estado == pausado){
 		//chamada recursiva para gerar dinamica do jogo
 		glutTimerFunc(500, DinamicaDoJogo,1);   
 		glutPostRedisplay();
@@ -427,7 +463,7 @@ void DinamicaDoJogo(int value)
 	raquete[0]++;
 
 	
-	//mivimentação dos mosquitos
+	//movimentação dos mosquitos
     for(int n=0;n<6;n++){
 		if(mosquito[n][0]){
     		//verifica bloqueio na horizontal 
@@ -473,12 +509,6 @@ void DinamicaDoJogo(int value)
 	glutPostRedisplay();
 }
 
-void DesenhaPausado(){
-	glColor3f(1.0f,1.0f,1.0f);
-	glRectf(4.5f, 5.5f, 6.5f, 9.5f);
-	glRectf(8.5f, 5.5f,10.5f, 9.5f);
-}
-
 void DesenhaMapa(){
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -496,25 +526,54 @@ void DesenhaMapa(){
 	}
 	
 	DesenhaVidas();
+	DesenhaPontuacao();
 	DesenhaMosquitos();
 	DesenhaRaquete();
-	DesenhaPersonagem(playerX, playerY);
-	if(pausado){
-		DesenhaPausado();
-	}
+	if(estado == jogando || estado == pausado)
+		DesenhaPersonagem(playerX, playerY);
+}
+
+void DesenhaMenu(){
+	glColor3f(1.0f,1.0f,1.0f);
+	glBegin(GL_TRIANGLES);
+		glVertex2f(13.5f, 13.45f - menuItem);
+		glVertex2f(12.5f, 13.0f - menuItem);
+		glVertex2f(13.5f, 12.55f - menuItem);
+	glEnd();
+	// DesenhaTexto(estado == pausado ? "continuar" : "start", 13.5f, 13.5f, 1.0f, false);
+	// DesenhaTexto("sair", 13.5f, 12.5f, 1.0f, false);
+}
+
+void DesenhaGameover(){
+	DesenhaMenu();
+	// DesenhaTexto("Gameover", 7.5f, 7.5f, 2.0, true);
+	glColor4f(1.0f,1.0f,1.0f, 1.0f);
+}
+
+void DesenhaPausado(){
+	DesenhaMenu();
+	glColor3f(1.0f,1.0f,1.0f);
+	glRectf(4.5f, 5.5f, 6.5f, 9.5f);
+	glRectf(8.5f, 5.5f,10.5f, 9.5f);
+}
+
+void DesenhaTela(){
+	glClearColor(0.576500f, 0.858800f, 0.439200f, 0.0f);
 	system("cls");
+	printf("\nEstado: %d", estado);
 	printf("\nPontuacao do jogador: %d", pontos);
-	printf("\nPausado: %d", pausado);
-			
+	DesenhaMapa();
+	if(estado == menu){
+		DesenhaMenu();
+	}else if(estado == gameover){
+		DesenhaGameover();
+	}else{
+		if(estado == pausado)
+			DesenhaPausado();
+	}
+
 	glFlush();
 }
-
-void InicializaJogo(){
-	glClearColor(0.576500f, 0.858800f, 0.439200f, 0.0f);
-	DesenhaMapa();
-}
-
-
 
 main(int argc, char** argv){
 	
@@ -526,7 +585,7 @@ main(int argc, char** argv){
 	glutInitWindowSize(500,500);  
 	glutCreateWindow("Racketman");
 	
-	glutDisplayFunc(InicializaJogo); // modificar depois para selecionar entre mapa, menu e game over
+	glutDisplayFunc(DesenhaTela);
 	glutSpecialFunc(Teclado2);    
 	glutKeyboardFunc(Teclado1); 
 	

@@ -136,7 +136,7 @@ main(int argc, char** argv){
 	glutDisplayFunc(DesenhaTela);
 	glutSpecialFunc(Teclado2);    
 	glutKeyboardFunc(Teclado1); 
-	glutTimerFunc(0, DinamicaDoJogo,1); //inicio do loop de dinamica do jogo
+	glutTimerFunc(0, DinamicaDoJogo, 1); //inicio do loop de dinamica do jogo
 	
 	glutMainLoop();
 	

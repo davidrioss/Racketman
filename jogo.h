@@ -102,62 +102,37 @@ class Jogo{
     }
 
     void atualiza(){
-        player.mover();
-
-        // Movimenta mosquitos
-        for(auto &mosquito : mosquitos){
-            mosquito.mover();
-
-            // Checa se colide com player
-            if(abs(mosquito.x - player.x) < FPS && abs(mosquito.y - player.y) < FPS)
-                morreu();
-        }
-
-        // Remove raquetes
+        // Atualiza as raquetes
         auto it = raquetes.begin();
         while(it != raquetes.end()){
-            if(it->frames-- == -FPS / 3){
-                mapa.removePos(it->x, it->y, RAQUETE);
+            if(it->atualiza(mapa)){
                 it = raquetes.erase(it);
             }else{
                 it++;
             }
         }
 
-        //mata mosquitos verificando se esta vivo e posição
-        // for(int n=0;n<6;n++){
-        // 	if(mosquito[n][0] && ((mosquito[n][1]==raquete[1] && (mosquito[n][2]<=raquete[2]+potenciaDaRaquete && mosquito[n][2]>=raquete[2]-potenciaDaRaquete)) || 
-        // (mosquito[n][2]==raquete[2] && (mosquito[n][1]<=raquete[1]+potenciaDaRaquete && mosquito[n][1]>=raquete[1]-potenciaDaRaquete)))){
-        // 			mosquito[n][0]=0;
-        // 			mapa[mosquito[n][1]][mosquito[n][2]]=0;
-        // 			contadorMosquitos--;
-        // 			pontos+=10;
-        // 	}	
-        // }
-        
-        // //destroi jogador
-        // if((playerX==raquete[1] && (playerY<=raquete[2]+potenciaDaRaquete && playerY>=raquete[2]-potenciaDaRaquete)) || 
-        // (playerY==raquete[2] && (playerX<=raquete[1]+potenciaDaRaquete && playerX>=raquete[2]-potenciaDaRaquete)))
-        // 	Morreu();
-        
-        // //destruir paredes
-        // for(int x=1;x<=potenciaDaRaquete;x++){
-        // 	if(mapa[raquete[1]+x][raquete[2]]==1)
-        // 		mapa[raquete[1]+x][raquete[2]]=0;
-        // 	if(mapa[raquete[1]-x][raquete[2]]==1)
-        // 		mapa[raquete[1]-x][raquete[2]]=0;	
-        // 	if(mapa[raquete[1]][raquete[2]+x]==1)
-        // 		mapa[raquete[1]][raquete[2]+x]=0;	
-        // 	if(mapa[raquete[1]][raquete[2]-x]==1)
-        // 		mapa[raquete[1]][raquete[2]-x]=0;
-        // 	if(mapa[raquete[1]+x][raquete[2]]==5)
-        // 		mapa[raquete[1]+x][raquete[2]]=6;
-        // 	if(mapa[raquete[1]-x][raquete[2]]==5)
-        // 		mapa[raquete[1]-x][raquete[2]]=6;	
-        // 	if(mapa[raquete[1]][raquete[2]+x]==5)
-        // 		mapa[raquete[1]][raquete[2]+x]=6;	
-        // 	if(mapa[raquete[1]][raquete[2]-x]==5)
-        // 		mapa[raquete[1]][raquete[2]-x]=6;
-        // }
+        player.mover(mapa);
+        // Colisão com a explosão
+        if(mapa.getPosMov(player.x, player.y) & EXPLOSAO)
+            morreu();
+
+        // Movimenta mosquitos
+        auto mosquito = mosquitos.begin();
+        while(mosquito != mosquitos.end()){
+            mosquito->mover(mapa);
+
+            // Colisão com o player
+            if(abs(mosquito->x - player.x) < FPS && abs(mosquito->y - player.y) < FPS)
+                morreu();
+            
+            // Colisão com a explosão
+            if(mapa.getPosMov(mosquito->x, mosquito->y) & EXPLOSAO){
+                mosquito->matar(mapa);
+                mosquito = mosquitos.erase(mosquito);
+            }else{
+                mosquito++;
+            }
+        }
     }
 };

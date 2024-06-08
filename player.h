@@ -21,7 +21,9 @@ class Player{
 
 	Player(){
         x = y = FPS;
-		potenciaDaRaquete = numRaquetes= velocidade = 1;
+		potenciaDaRaquete = numRaquetes = 1;
+		velocidade = 2;
+		dx = dy = 0;
 		vivo = true;
 	}
 
@@ -43,7 +45,7 @@ class Player{
 			return;
 		
 		mapa.setPos(i, j, RAQUETE);
-		raquetes.emplace_back(i, j, potenciaDaRaquete, 5 * FPS);
+		raquetes.emplace_back(i, j, potenciaDaRaquete, 3 * FPS);
 	}
 
 	void comecaMovimento(int ndx, int ndy, Mapa mapa){
@@ -54,17 +56,25 @@ class Player{
 		dy = ndy;
 	}
 
-	void mover(){
+	void mover(Mapa &mapa){
 		x += velocidade * dx;
 		y += velocidade * dy;
 
 		if(inteiro(x) && inteiro(y)){
 			dx = 0;
 			dy = 0;
+			int i = x / FPS, j = y / FPS;
+			if(mapa.getPos(i, j) & BONUS){
+				if(potenciaDaRaquete < POTENCIAMAX)
+					potenciaDaRaquete++;
+				mapa.removePos(i, j, BONUS);
+			}
 		}
 	}
 
 	void desenha(){
+		if(!vivo)
+			return;
 		float X = (float) x / FPS;
 		float Y = (float) y / FPS;
 		glColor3f(0.329400f,0.329400f,0.329400f); //CALÇA

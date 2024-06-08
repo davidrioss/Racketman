@@ -11,67 +11,59 @@ class Mosquito{
 	int dx, dy;
 	int velocidade;
 	int tipo;
+	bool movendo;
 
 	Mosquito(int velocidade, int tipo, Mapa &mapa) : velocidade(velocidade), tipo(tipo){
 		do{
 			x = (rand() % (mapa.linhas - 3)) + 2;
 			y = (rand() % (mapa.colunas - 3)) + 2;
 		}while(mapa.getPos(x, y));
+		mapa.setPos(x, y, MOSQUITO);
 		
-		dx = 1;
-		dy = 0;
+		if(mapa.getPos(x + 1, y) & BLOCO && mapa.getPos(x - 1, y)){
+			dx = 0;
+			dy = 1;
+		}else if(mapa.getPos(x, y + 1) & BLOCO && mapa.getPos(x, y - 1)){
+			dx = 1;
+			dy = 0;
+		}else{
+			dx = rand() % 2;
+			dy = !dx;
+		}
 
 		x *= FPS;
 		y *= FPS;
+		movendo = false;
 	}
 
-	void mover(){
-		//verifica bloqueio na horizontal 
-		// if((mapa[mosquito[n][1]+1][mosquito[n][2]]!=0 && mapa[mosquito[n][1]-1][mosquito[n][2]]==0) || (mapa[mosquito[n][1]+1][mosquito[n][2]]==0 && mapa[mosquito[n][1]-1][mosquito[n][2]]!=0))
-		// mosquito[n][3] = -mosquito[n][3];
+	void mover(Mapa &mapa){
+		if(inteiro(x) && inteiro(y)){
+			int i = (float) x / FPS, j = (float) y / FPS;
+			if(movendo)
+				mapa.removePos(i - dx, j - dy, MOSQUITO);
 
-		// //verifica bloqueio na vertical
-		// if((mapa[mosquito[n][1]][mosquito[n][2]+1]==0 && mapa[mosquito[n][1]][mosquito[n][2]-1])!=0 || (mapa[mosquito[n][1]][mosquito[n][2]+1]!=0 && mapa[mosquito[n][1]][mosquito[n][2]-1]==0))
-		// mosquito[n][4] = -mosquito[n][4];
+			if(mapa.getPos(i + dx, j + dy) & (BLOCO | PAREDE | RAQUETE | MOSQUITO)){
+				dx *= -1;
+				dy *= -1;
+				movendo = false;
+				return;
+			}
 
-		// //inverte eixo de movidentação do mosquito se eixo bloqueado
-		// if((mapa[mosquito[n][1]+1][mosquito[n][2]] && mapa[mosquito[n][1]-1][mosquito[n][2]] && mosquito[n][3]) || (mapa[mosquito[n][1]][mosquito[n][2]+1]!=0 && mapa[mosquito[n][1]][mosquito[n][2]-1]!=0 && mosquito[n][4])){
-		// 	int aux = mosquito[n][3];
-		// 	mosquito[n][3] = mosquito[n][4];
-		// 	mosquito[n][4] = aux;
-		// } 
+			mapa.setPos(i + dx, j + dy, MOSQUITO);
+		}
 
-		// //movimenta mosquito
-		// if(mosquito[n][3] && (mapa[mosquito[n][1] + mosquito[n][3]][mosquito[n][2]]==0)){
-		// 	mapa[mosquito[n][1]][mosquito[n][2]]=0;
-		// 	mosquito[n][1] += mosquito[n][3];
-		// 	mapa[mosquito[n][1]][mosquito[n][2]]=4;
-		// 	if(playerX==mosquito[n][1] && playerY==mosquito[n][2])
-		// 		Morreu();
-		// }
-		// else{
-		// 	if(mosquito[n][4] && (mapa[mosquito[n][1]][mosquito[n][2] + mosquito[n][4]]==0)){
-		// 		mapa[mosquito[n][1]][mosquito[n][2]]=0;
-		// 		mosquito[n][2] += mosquito[n][4];
-		// 		mapa[mosquito[n][1]][mosquito[n][2]]=4;
-		// 		if(playerX==mosquito[n][1] && playerY==mosquito[n][2])
-		// 			Morreu();
-		// 	}
-		// }
-		// if(abs(x - (int) x) < 1e-4 && abs(y - (int) y) < 1e-4){
-		// 	switch (tipo)
-		// 	{
-		// 	case 0:
-		// 		dx *= -1;
-		// 		dy *= -1;
-		// 		return;
-		// 	default:
-		// 		return;
-		// 	}
-		// }
-
+		movendo = true;
 		x += velocidade * dx;
 		y += velocidade * dy;
+	}
+
+	void matar(Mapa &mapa){
+		int i = x / FPS, j = y / FPS;
+		mapa.removePos(i, j, MOSQUITO);
+		if(!inteiro(x))
+			mapa.removePos(i + 1, j, MOSQUITO);
+		if(!inteiro(y))
+			mapa.removePos(i, j + 1, MOSQUITO);
 	}
 
     void desenha(){

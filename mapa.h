@@ -28,7 +28,7 @@ class Mapa{
             if(grid[aux1][aux2])
                 continue;
             grid[aux1][aux2] = PAREDE;
-            if(rand() % 10 == 0)
+            // if(rand() % 10 == 0)
                 grid[aux1][aux2] |= BONUS;
             paredes--;
         }
@@ -38,12 +38,13 @@ class Mapa{
 		return grid[x][y];
 	}
 
-	char getPos(float x, float y){
+	char getPosMov(int x, int y){
+        int i = x / FPS, j = y / FPS;
 		if(!inteiro(x))
-			return getPos((int) floor(x), (int) y) | getPos((int) ceil(x), (int) y);
+			return getPos(i, j) | getPos(i + 1, j);
 		if(!inteiro(y))
-			return getPos((int) x, (int) floor(y)) | getPos((int) x, (int) ceil(y));
-		return getPos((int) x, (int) y);
+			return getPos(i, j) | getPos(i, j + 1);
+		return getPos(i, j);
 	}
 
 	void setPos(int x, int y, char e){
@@ -57,7 +58,7 @@ class Mapa{
     void desenha(){
         for(int i = 0; i < linhas; i++){
             for(int j = 0; j < colunas; j++){
-                if(grid[i][j] == BLOCO){
+                if(grid[i][j] & BLOCO){
                     glColor3f(0.329400f,0.329400f,0.329400f);
                     glRectf(i, j, i+1, j+1);
                     
@@ -68,7 +69,7 @@ class Mapa{
                         glVertex2f(i+1, j+1);
                         glVertex2f(i+1, j);
                     glEnd();
-                }else if(grid[i][j] == PAREDE){
+                }else if(grid[i][j] & PAREDE){
                     glColor3f(0.556900f,0.419600f,0.137300f);
                     glRectf(i, j, i+1, j+1);
                     
@@ -79,12 +80,12 @@ class Mapa{
                         glVertex2f(i+1, j+1);
                         glVertex2f(i+1, j);
                     glEnd();
-                }else if(grid[i][j] == BONUS){
+                }else if(grid[i][j] & BONUS){
                     glColor3f(0.196100f,0.800000f,0.196100f);
                     glRectf(i+0.2, j, i+0.8, j+0.7);
                     glColor3f(0.10f,0.10f,0.10f);
                     glRectf(i+0.3, j+0.9, i+0.7, j+1);
-                    glRectf(i+0.2, j+0.7, j+0.8, j+0.9);
+                    glRectf(i+0.2, j+0.7, i+0.8, j+0.9);
                     glBegin( GL_LINE_LOOP);
                         glVertex2f(i+0.2, j);
                         glVertex2f(i+0.8, j);

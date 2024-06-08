@@ -9,36 +9,40 @@
 
 class Mapa{
 	public:
-	std::vector<std::vector<char>> grid;
+	std::vector<std::vector<short int>> grid;
 	int linhas;
 	int colunas;
 
 	Mapa(int linhas, int colunas, int paredes) : linhas(linhas), colunas(colunas){
-		grid = std::vector<std::vector<char>>(linhas, std::vector<char>(colunas));
+		grid = std::vector<std::vector<short int>>(linhas, std::vector<short int>(colunas));
 
-        for(int i = 0; i < linhas; i++)
-            for(int j = 0; j < colunas; j++)
-                if(i == 0 || i == linhas - 1 || j == 0 || j== colunas - 1 || ( i % 2 == 0 && j % 2 == 0))
-                    grid[i][j] = BLOCO;
-        
-        //distribui paredes aleatoriamente e bonus
-        while(paredes){
-            int aux1 = (rand() % (linhas - 3)) + 2; 
-            int aux2 = (rand() % (colunas - 3)) + 2;
-            if(grid[aux1][aux2])
-                continue;
-            grid[aux1][aux2] = PAREDE;
-            // if(rand() % 10 == 0)
-                grid[aux1][aux2] |= BONUS;
-            paredes--;
+        for(int i = 0; i < linhas; i++) for(int j = 0; j < colunas; j++){
+            if(i == 0 || i == linhas - 1 || j == 0 || j== colunas - 1 || ( i % 2 == 0 && j % 2 == 0)){
+                grid[i][j] = BLOCO;
+            }else if(rand() % 100 < paredes){
+                grid[i][j] = PAREDE;
+
+                // Distribui bonus
+                int bonus = rand() % 100;
+                if(bonus == 0)
+                    grid[i][j] |= VIDA;
+                else if(bonus <= 6)
+                    grid[i][j] |= RAQPODER;
+                else if(bonus <= 11)
+                    grid[i][j] |= RAQBONUS;
+                else if(bonus <= 15)
+                    grid[i][j] |= BOTA;
+            }
         }
+        grid[1][1] = grid[1][2] = grid[2][1] = 0;
+        grid[3][1] = grid[1][3] = PAREDE;
 	}
 
-	char getPos(int x, int y){
+	int getPos(int x, int y){
 		return grid[x][y];
 	}
 
-	char getPosMov(int x, int y){
+	int getPosMov(int x, int y){
         int i = x / FPS, j = y / FPS;
 		if(!inteiro(x))
 			return getPos(i, j) | getPos(i + 1, j);
@@ -47,11 +51,11 @@ class Mapa{
 		return getPos(i, j);
 	}
 
-	void setPos(int x, int y, char e){
+	void setPos(int x, int y, int e){
 		grid[x][y] |= e;
 	}
 
-	void removePos(int x, int y, char e){
+	void removePos(int x, int y, int e){
 		grid[x][y] &= ~e;
 	}
 
@@ -80,7 +84,10 @@ class Mapa{
                         glVertex2f(i+1, j+1);
                         glVertex2f(i+1, j);
                     glEnd();
-                }else if(grid[i][j] & BONUS){
+                }else if(grid[i][j] & VIDA){
+                    glColor3f(1.0, 0.0, 0.0);
+                    glRectf(i + 0.2, j + 0.2, i + 0.8, j + 0.8);
+                }else if(grid[i][j] & RAQPODER){
                     glColor3f(0.196100f,0.800000f,0.196100f);
                     glRectf(i+0.2, j, i+0.8, j+0.7);
                     glColor3f(0.10f,0.10f,0.10f);
@@ -101,6 +108,15 @@ class Mapa{
                         glVertex2f(i+0.4, j+0.6);
                     glEnd();
                     glLineWidth(1.0);
+                }else if(grid[i][j] & RAQBONUS){
+                    glColor3f(0.0, 1.0, 1.0);
+                    glRectf(i + 0.2, j + 0.2, i + 0.8, j + 0.8);
+                }else if(grid[i][j] & BOTA){
+                    glColor3f(1.0, 1.0, 1.0);
+                    glRectf(i + 0.2, j + 0.2, i + 0.8, j + 0.8);
+                }else if(grid[i][j] & ESCADA){
+                    glColor3f(0.0, 0.0, 0.0);
+                    glRectf(i + 0.3, j + 0.2, i + 0.7, j + 0.8);
                 }
             }
         }

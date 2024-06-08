@@ -69,7 +69,7 @@ void DinamicaDoJogo(int frame)
 {
 	if(tela == JOGO){
 		jogo.atualiza();
-		if(jogo.vidas == 0)
+		if(jogo.player.vidas == 0)
 			tela = GAMEOVER;
 	}
 
@@ -107,6 +107,11 @@ void DesenhaTela(){
 	system("cls");
 	printf("\nTela: %d", tela);
 	printf("\nPontuacao do jogador: %d", jogo.pontos);
+	printf("\nAltura %d Largura %d", altura, largura);
+	printf("\nVelocidade %d", jogo.player.velocidade);
+	printf("\nVidas %d", jogo.player.vidas);
+	printf("\nNumRaquetes %d", jogo.player.numRaquetes);
+	printf("\nPoder %d", jogo.player.potenciaDaRaquete);
 	switch (tela)
 	{
 	case MENU:
@@ -126,13 +131,25 @@ void DesenhaTela(){
 	glFlush();
 }
 
+// Função callback chamada quando o tamanho da janela é alterado 
+void AlteraTamanhoJanela(GLsizei w, GLsizei h)
+{
+	// Atualiza as variáveis
+	largura = w;
+	altura = h;
+
+	// Especifica as dimensões da Viewport
+	glViewport(0, 0, largura, altura);
+}
+
 main(int argc, char** argv){
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);  
 	glutInitWindowPosition(5,5);     
-	glutInitWindowSize(500,500);  
+	glutInitWindowSize(500,500);
 	glutCreateWindow("Racketman");
 	
+	glutReshapeFunc(AlteraTamanhoJanela);
 	glutDisplayFunc(DesenhaTela);
 	glutSpecialFunc(Teclado2);    
 	glutKeyboardFunc(Teclado1); 

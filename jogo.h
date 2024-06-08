@@ -12,20 +12,20 @@
 class Jogo{
     public:
     int pontos = 0;
-    int vidas = 3;
+    int fase = 0;
     std::list<Mosquito> mosquitos;
     std::list<Raquete> raquetes;
     Mapa mapa;
     Player player;
 
-    Jogo() : mapa(15, 15, 55) {
+    Jogo() : mapa(5, 5, 60) {
         player = Player();
         
         srand(time(NULL));
-        int qtdMosquitos=6;
+        int qtdMosquitos=1;
         mosquitos = std::list<Mosquito>();
         while(qtdMosquitos--){
-            mosquitos.emplace_back(1, 0, mapa);
+            mosquitos.emplace_back(0, 0, mapa);
         }
     }
 
@@ -57,8 +57,8 @@ class Jogo{
     }
 
     void desenhaVidas(){
-        int b = 14;
-        for(int a = 1; a <= vidas; a++){
+        int b = mapa.linhas - 1;
+        for(int a = 1; a <= player.vidas; a++){
             glColor3f(1.0f,0.0f,0.0f);
             glBegin( GL_POLYGON);
                 glVertex3f(a+0.5, b, 0.0f);
@@ -76,10 +76,22 @@ class Jogo{
         
     }
 
+    void ajustaEscala(){
+        float razaoLargura = (float) largura / mapa.colunas;
+        float razaoAltura = (float) altura / mapa.linhas;
+        if(razaoLargura <= razaoAltura){
+            double sobra = (razaoAltura / razaoLargura - 1) * mapa.linhas / 2;
+            gluOrtho2D(0.0, (double) mapa.colunas, -sobra, mapa.linhas + sobra);
+        }else{
+            double sobra = (razaoLargura / razaoAltura - 1) * mapa.colunas / 2;
+            gluOrtho2D(-sobra, mapa.colunas + sobra, 0.0, (double) mapa.linhas);
+        }
+    }
+
     void desenha(){
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        gluOrtho2D(0, mapa.colunas, 0, mapa.linhas);
+        ajustaEscala();
         glClear(GL_COLOR_BUFFER_BIT);
 
         mapa.desenha();
@@ -98,7 +110,20 @@ class Jogo{
             return;
         
         player.vivo = false;
-        vidas--;
+        player.vidas--;
+    }
+
+    void proximaFase(){
+        fase++;
+        player.setaPos(1, 1);
+        mapa = Mapa(5 + fase * 2, 5 + fase * 2, 60);
+        
+        raquetes.clear();
+        int qtdMosquitos = fase * 2;
+        mosquitos.clear();
+        while(qtdMosquitos--){
+            mosquitos.emplace_back(fase / 2, 0, mapa);
+        }
     }
 
     void atualiza(){
@@ -114,8 +139,11 @@ class Jogo{
 
         player.mover(mapa);
         // Colisão com a explosão
-        if(mapa.getPosMov(player.x, player.y) & EXPLOSAO)
+        auto a = mapa.getPosMov(player.x, player.y);
+        if(a & EXPLOSAO)
             morreu();
+        else if(a & ESCADA)
+            proximaFase();
 
         // Movimenta mosquitos
         auto mosquito = mosquitos.begin();
@@ -133,6 +161,10 @@ class Jogo{
             }else{
                 mosquito++;
             }
+        }
+
+        if(mosquitos.empty()){
+            mapa.setPos(1, 1, ESCADA);
         }
     }
 };

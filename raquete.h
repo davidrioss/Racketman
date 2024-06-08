@@ -65,9 +65,9 @@ class Raquete{
             mapa.removePos(x, y, RAQUETE);
             atualizaRaio(mapa, [&mapa](int x, int y){
                 if(mapa.getPos(x, y) & PAREDE)
-                    mapa.removePos(x, y, EXPLOSAO| PAREDE);
+                    mapa.removePos(x, y, EXPLOSAO | PAREDE);
                 else
-                    mapa.removePos(x, y, EXPLOSAO | BONUS);
+                    mapa.grid[x][y] = 0;
             });
             return true;
         }

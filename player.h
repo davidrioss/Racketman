@@ -17,13 +17,15 @@ class Player{
 	int velocidade;
     int potenciaDaRaquete;
     int numRaquetes;
+	int vidas;
 	bool vivo;
 
 	Player(){
         x = y = FPS;
 		potenciaDaRaquete = numRaquetes = 1;
-		velocidade = 2;
+		velocidade = 1;
 		dx = dy = 0;
+		vidas = 3;
 		vivo = true;
 	}
 
@@ -57,17 +59,30 @@ class Player{
 	}
 
 	void mover(Mapa &mapa){
-		x += velocidade * dx;
-		y += velocidade * dy;
+		x += velocidades[velocidade] * dx;
+		y += velocidades[velocidade] * dy;
 
 		if(inteiro(x) && inteiro(y)){
 			dx = 0;
 			dy = 0;
 			int i = x / FPS, j = y / FPS;
-			if(mapa.getPos(i, j) & BONUS){
+			auto a = mapa.getPos(i, j);
+			if(a & VIDA){
+				if(vidas < VIDAMAX)
+					vidas++;
+				mapa.removePos(i, j, VIDA);
+			}else if(a & RAQPODER){
 				if(potenciaDaRaquete < POTENCIAMAX)
 					potenciaDaRaquete++;
-				mapa.removePos(i, j, BONUS);
+				mapa.removePos(i, j, RAQPODER);
+			}else if(a & RAQBONUS){
+				if(potenciaDaRaquete < RAQUETESMAX)
+					numRaquetes++;
+				mapa.removePos(i, j, RAQBONUS);
+			}else if(a & BOTA){
+				if(velocidade < VELOCIDADEMAX)
+					velocidade++;
+				mapa.removePos(i, j, BOTA);
 			}
 		}
 	}

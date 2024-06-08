@@ -53,8 +53,8 @@ class Mosquito{
 		}
 
 		movendo = true;
-		x += velocidade * dx;
-		y += velocidade * dy;
+		x += velocidades[velocidade] * dx;
+		y += velocidades[velocidade] * dy;
 	}
 
 	void matar(Mapa &mapa){

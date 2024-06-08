@@ -30,6 +30,9 @@ class Jogo{
     }
 
     void teclado(int key, int x, int y){
+        if(!player.vivo)
+            player.setaPos(1, 1);
+
         if(key == GLUT_KEY_RIGHT)
         {
             player.comecaMovimento(1, 0, mapa);

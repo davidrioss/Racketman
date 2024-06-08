@@ -38,19 +38,17 @@ class Player{
 	}
 
 	void colocaRaquete(std::list<Raquete> &raquetes, Mapa &mapa){
-		if(movendo() || raquetes.size() == numRaquetes || mapa.getPos(x / FPS, y / FPS) & RAQUETE)
+		int i = x / FPS, j = y / FPS;
+		if(movendo() || raquetes.size() == numRaquetes || mapa.getPos(i, j) & RAQUETE)
 			return;
 		
-		mapa.setPos(x / FPS, y / FPS, RAQUETE);
-		raquetes.emplace_back(x / FPS, y / FPS, potenciaDaRaquete, 5 * FPS);
+		mapa.setPos(i, j, RAQUETE);
+		raquetes.emplace_back(i, j, potenciaDaRaquete, 5 * FPS);
 	}
 
-	void comecaMovimento(int ndx, int ndy, Mapa m){
-		if(!vivo){
-			setaPos(0, 0);
-			return;
-		}
-        if(movendo())
+	void comecaMovimento(int ndx, int ndy, Mapa mapa){
+		int i = x / FPS, j = y / FPS;
+        if(movendo() || mapa.getPos(i + ndx, j + ndy) & (BLOCO | PAREDE | RAQUETE))
             return;
 		dx = ndx;
 		dy = ndy;

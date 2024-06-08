@@ -1,43 +1,65 @@
 #pragma once
 
-#include "utils.h"
+#include "raquete.h"
 #include "mapa.h"
+#include "utils.h"
+
+#include <list>
 
 #include <GL/glut.h>
 
-class player{
+class Player{
 	public:
-	float x, y;
-	int dx, dy, v;
+	int x;
+	int y;
+	int dx;
+	int dy;
+	int velocidade;
+    int potenciaDaRaquete;
+    int numRaquetes;
+	bool vivo;
 
-	player(){
-		v = 1;
-        x = y = 1;
+	Player(){
+        x = y = FPS;
+		potenciaDaRaquete = numRaquetes= velocidade = 1;
+		vivo = true;
 	}
 
 	void setaPos(int nx, int ny){
-		x = nx;
-		y = ny;
+		x = nx * FPS;
+		y = ny * FPS;
 		dx = 0;
 		dy = 0;
+		vivo = true;
 	}
 
 	bool movendo(){
 		return dx || dy;
 	}
 
-	void comecaMovimento(int ndx, int ndy, mapa m){
+	void colocaRaquete(std::list<Raquete> &raquetes, Mapa &mapa){
+		if(movendo() || raquetes.size() == numRaquetes || mapa.getPos(x / FPS, y / FPS) & RAQUETE)
+			return;
+		
+		mapa.setPos(x / FPS, y / FPS, RAQUETE);
+		raquetes.emplace_back(x / FPS, y / FPS, potenciaDaRaquete, 5 * FPS);
+	}
+
+	void comecaMovimento(int ndx, int ndy, Mapa m){
+		if(!vivo){
+			setaPos(0, 0);
+			return;
+		}
         if(movendo())
             return;
 		dx = ndx;
 		dy = ndy;
 	}
 
-	void mover(float fps){
-		x += v * dx / fps;
-		y += v * dy / fps;
+	void mover(){
+		x += velocidade * dx;
+		y += velocidade * dy;
 
-        printf("%.3lf: %.3lf, %.3lf: %.3lf\n", x, abs(x - (int) x), y, abs(y - (int) y));
 		if(inteiro(x) && inteiro(y)){
 			dx = 0;
 			dy = 0;
@@ -45,29 +67,31 @@ class player{
 	}
 
 	void desenha(){
+		float X = (float) x / FPS;
+		float Y = (float) y / FPS;
 		glColor3f(0.329400f,0.329400f,0.329400f); //CALÇA
-		glRectf(x + 0.38f, y + 0.05f, x + 0.47f, y + 0.30f);
-		glRectf(x + 0.62f, y + 0.05f, x + 0.71f, y + 0.30f);
-		glRectf(x + 0.38f, y + 0.30f, x + 0.71f, y + 0.40f);
+		glRectf(X + 0.38f, Y + 0.05f, X + 0.47f, Y + 0.30f);
+		glRectf(X + 0.62f, Y + 0.05f, X + 0.71f, Y + 0.30f);
+		glRectf(X + 0.38f, Y + 0.30f, X + 0.71f, Y + 0.40f);
 
 		glColor3f(1.0f,1.0f,1.0f); //camisa
-		glRectf(x + 0.45f, y + 0.40f, x + 0.55f, y + 0.67f);
-		glRectf(x + 0.33f, y + 0.55f, x + 0.38f, y + 0.67f);
-		glRectf(x + 0.71f, y + 0.55f, x + 0.76f, y + 0.67f);
+		glRectf(X + 0.45f, Y + 0.40f, X + 0.55f, Y + 0.67f);
+		glRectf(X + 0.33f, Y + 0.55f, X + 0.38f, Y + 0.67f);
+		glRectf(X + 0.71f, Y + 0.55f, X + 0.76f, Y + 0.67f);
 
 		glColor3f(0.0f,0.0f,1.0f); //colete e bone
-		glRectf(x + 0.38f, y + 0.40f, x + 0.45f, y + 0.67f);
-		glRectf(x + 0.55f, y + 0.40f, x + 0.71f, y + 0.67f);
-		glRectf(x + 0.40f, y + 0.90f, x + 0.60f, y + 1.00f);
-		glRectf(x + 0.60f, y + 0.90f, x + 0.65f, y + 0.93f);
+		glRectf(X + 0.38f, Y + 0.40f, X + 0.45f, Y + 0.67f);
+		glRectf(X + 0.55f, Y + 0.40f, X + 0.71f, Y + 0.67f);
+		glRectf(X + 0.40f, Y + 0.90f, X + 0.60f, Y + 1.00f);
+		glRectf(X + 0.60f, Y + 0.90f, X + 0.65f, Y + 0.93f);
 
 		glColor3f(0.858800f,0.576500f,0.439200f); //rosto e braços
-		glRectf(x + 0.33f, y + 0.55f, x + 0.38f, y + 0.35f);
-		glRectf(x + 0.71f, y + 0.55f, x + 0.76f, y + 0.35f);
-		glRectf(x + 0.40f, y + 0.90f, x + 0.60f, y + 0.67f);
+		glRectf(X + 0.33f, Y + 0.55f, X + 0.38f, Y + 0.35f);
+		glRectf(X + 0.71f, Y + 0.55f, X + 0.76f, Y + 0.35f);
+		glRectf(X + 0.40f, Y + 0.90f, X + 0.60f, Y + 0.67f);
 
 		glColor3f(0.0f,0.0f,0.3f); //pes
-		glRectf(x + 0.38f, y + 0.05f, x + 0.50f, y + 0.00f);
-		glRectf(x + 0.62f, y + 0.05f, x + 0.75f, y + 0.00f);
+		glRectf(X + 0.38f, Y + 0.05f, X + 0.50f, Y + 0.00f);
+		glRectf(X + 0.62f, Y + 0.05f, X + 0.75f, Y + 0.00f);
 	}
 };

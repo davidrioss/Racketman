@@ -7,22 +7,13 @@
 
 #include <GL/glut.h>
 
-enum Entidades{
-	BLOCO    = 1,
-	PAREDE   = 2,
-	RAQUETE  = 1 << 2,
-	BONUS    = 1 << 3
-};
-
-class mapa{
+class Mapa{
 	public:
 	std::vector<std::vector<char>> grid;
 	int linhas;
 	int colunas;
 
-    mapa(){}
-
-	mapa(int linhas, int colunas, int paredes) : linhas(linhas), colunas(colunas){
+	Mapa(int linhas, int colunas, int paredes) : linhas(linhas), colunas(colunas){
 		grid = std::vector<std::vector<char>>(linhas, std::vector<char>(colunas));
 
         for(int i = 0; i < linhas; i++)

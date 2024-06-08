@@ -43,7 +43,7 @@ class Player{
 
 	void colocaRaquete(std::list<Raquete> &raquetes, Mapa &mapa){
 		int i = x / FPS, j = y / FPS;
-		if(movendo() || raquetes.size() == numRaquetes || mapa.getPos(i, j) & RAQUETE)
+		if(!vivo || movendo() || raquetes.size() == numRaquetes || mapa.getPos(i, j) & RAQUETE)
 			return;
 		
 		mapa.setPos(i, j, RAQUETE);

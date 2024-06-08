@@ -54,7 +54,7 @@ class Raquete{
                 if(a & BLOCO)
                     break;
                 f(i, j);
-                if(a & PAREDE)
+                if(a & PAREDE || a & RAQUETE)
                     break;
             }
         }
@@ -62,7 +62,7 @@ class Raquete{
 
     bool atualiza(Mapa &mapa){
         if(--frames == -FPS / 3){
-            mapa.removePos(x, y, RAQUETE);
+            mapa.grid[x][y] = 0;
             atualizaRaio(mapa, [&mapa](int x, int y){
                 if(mapa.getPos(x, y) & PAREDE)
                     mapa.removePos(x, y, EXPLOSAO | PAREDE);
@@ -72,10 +72,14 @@ class Raquete{
             return true;
         }
 
-        if(frames)
-            return false;
+        if(frames > 0){
+            if(!(mapa.getPos(x, y) & EXPLOSAO))
+                return false;
+            frames = 0;
+        }
         
         // Explosão
+        mapa.setPos(x, y, EXPLOSAO);
         atualizaRaio(mapa, [&mapa](int x, int y){
             mapa.setPos(x, y, EXPLOSAO);
         });

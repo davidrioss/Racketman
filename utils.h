@@ -17,14 +17,14 @@
 #define VELOCIDADEMAX 7
 
 int largura, altura;
-int dirs[][2] = {1,0, -1,0, 0,1, 0,-1};
+int dirs[][2] = {1,0, 0,1, -1,0, 0,-1};
 int velocidades[] = {1, 2, 3, 4, 6, 10, 15, 20};
 GLuint textureID[40];
 
 enum Entidades{
 	BLOCO    = 1,
 	PAREDE   = 2,
-	PORTA   = 1 << 2,
+	PORTA    = 1 << 2,
 	RAQUETE  = 1 << 3,
 	EXPLOSAO = 1 << 4,
     MOSQUITO = 1 << 5,
@@ -42,7 +42,7 @@ enum Texturas{
 	T_PAREDE,
 	T_JOGADOR,
 	T_MOSQUITO = 18,
-	T_RAQUETE = 20,
+	T_RAQUETE = 24,
 	T_CORACAO,
 	T_RAIO,
 	T_BATERIA,

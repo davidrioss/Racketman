@@ -97,7 +97,7 @@ void InicializarTexturas () {
 	loadTexture("raquetebonus.png", T_RAQUETEBONUS);
 }
 
-void Teclado1(unsigned char key, int x, int y)
+void Teclado(unsigned char key, int x, int y)
 {
 	if (key == 27)
 		exit(0);
@@ -130,7 +130,7 @@ void Teclado1(unsigned char key, int x, int y)
 	}
 
 	if(key == '3'){
-		if(!jogo.player.movendo() && jogo.player.velocidade < VELOCIDADEMAX)
+		if(!jogo.player.movendo() && jogo.player.velocidade < VELOCIDADEMAX - 1)
 			jogo.player.velocidade++;
 	}
 
@@ -142,14 +142,21 @@ void Teclado1(unsigned char key, int x, int y)
 	}
 }
 
-void Teclado2(int key, int x, int y){
+void TecladoEspecial(int key, int x, int y){
 	if (key == GLUT_KEY_HOME){
 		resetaJogo();
 		return;
 	}
 
 	if(tela == JOGO){
-		jogo.teclado(key, x, y);
+		jogo.tecladoEspecial(key, x, y);
+		return;
+	}
+}
+
+void TecladoEspecialSolto(int key, int x, int y){
+	if(tela == JOGO){
+		jogo.tecladoEspecialSolto(key, x, y);
 		return;
 	}
 }
@@ -289,8 +296,9 @@ main(int argc, char** argv){
 	InicializarTexturas();
 	initializeAudios();
 	glutDisplayFunc(DesenhaTela);
-	glutSpecialFunc(Teclado2);    
-	glutKeyboardFunc(Teclado1); 
+	glutSpecialFunc(TecladoEspecial);
+	glutSpecialUpFunc(TecladoEspecialSolto);
+	glutKeyboardFunc(Teclado); 
 	glutMouseFunc(GerenciaMouse);
 	glutPassiveMotionFunc(passiveMouseMotion);
 	glutTimerFunc(500, DinamicaDoJogo,1); //inicio do loop de dinamica do jogo

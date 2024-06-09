@@ -14,13 +14,11 @@ class Jogo{
     int pontos = 0;
     int fase = 0;
     std::list<Mosquito> mosquitos;
-    std::list<Raquete> raquetes;
     Mapa mapa;
     Player player;
+    std::list<int> setas;
 
-    Jogo() : mapa(9, 9, 60) {
-        player = Player();
-        
+    Jogo() : mapa(9, 9, 60){
         srand(time(NULL));
         int qtdMosquitos=1;
         mosquitos = std::list<Mosquito>();
@@ -29,10 +27,37 @@ class Jogo{
         }
     }
 
-    void teclado(int key, int x, int y){
-        if(!player.vivo)
+    void tecladoEspecial(int key, int x, int y){
+        printf("Setas: %ld\n", setas.size());
+        if(!player.vivo && setas.size() == 0)
             player.setaPos(1, 1);
+        
+        if(key == GLUT_KEY_RIGHT || key == GLUT_KEY_LEFT || key == GLUT_KEY_UP || key == GLUT_KEY_DOWN){
+            for(auto &k : setas)
+                if(k == key)
+                    return;
 
+            setas.push_back(key);
+        }
+    }
+
+    void tecladoEspecialSolto(int key, int x, int y){
+        if(key == GLUT_KEY_RIGHT || key == GLUT_KEY_LEFT || key == GLUT_KEY_UP || key == GLUT_KEY_DOWN){
+            auto it = setas.begin();
+            while(it != setas.end()){
+                if(*it == key)
+                    it = setas.erase(it);
+                else
+                    it++;
+            }
+        }
+        printf("Setas: %ld\n", setas.size());
+    }
+
+    void comecaMovimento(){
+        if(setas.empty())
+            return;
+        int key = setas.back();
         if(key == GLUT_KEY_RIGHT)
         {
             player.comecaMovimento(1, 0, mapa);
@@ -53,7 +78,7 @@ class Jogo{
     }
 
     void colocaRaquete(){
-        player.colocaRaquete(raquetes, mapa);
+        player.colocaRaquete(mapa);
     }
 
     void desenhaVidas(){
@@ -107,7 +132,7 @@ class Jogo{
             desenhaNumero(q, x + 0.6f, y + 0.1f, 0.7f);
         };
 
-        desenha(1.0, 0.0, T_RAQUETE, player.numRaquetes - raquetes.size());
+        desenha(1.0, 0.0, T_RAQUETE, player.numRaquetes);
         desenha(2.0, 0.0, T_BATERIA, player.potenciaDaRaquete);
         desenha(3.0, 0.0, T_TENIS  , player.velocidade);
     }
@@ -122,11 +147,10 @@ class Jogo{
 
     void proximaFase(){
         fase++;
-        player.setaPos(1, 1);
+        player.reseta();
         int tamanho = minimo(9 + fase / 3 * 2, 15);
         mapa = Mapa(tamanho, tamanho, maximo(60 - fase, 20));
         
-        raquetes.clear();
         int qtdMosquitos = minimo(fase + 1, 10);
         mosquitos.clear();
         while(qtdMosquitos--){
@@ -136,15 +160,17 @@ class Jogo{
 
     void atualiza(){
         // Atualiza as raquetes
-        auto it = raquetes.begin();
-        while(it != raquetes.end()){
+        auto it = player.raquetes.begin();
+        while(it != player.raquetes.end()){
             if(it->atualiza(mapa)){
-                it = raquetes.erase(it);
+                it = player.raquetes.erase(it);
+                player.numRaquetes++;
             }else{
                 it++;
             }
         }
 
+        comecaMovimento();
         player.mover(mapa);
         // Colisão com a explosão
         auto a = mapa.getPosMov(player.x, player.y);

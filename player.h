@@ -17,15 +17,21 @@ class Player{
     int numRaquetes;
 	int vidas;
 	bool vivo;
-	bool espelha = true;
+	bool espelha;
+    std::list<Raquete> raquetes{};
+	int framesProximo;
 
 	Player(){
-        x = y = FPS;
-		potenciaDaRaquete = numRaquetes = 1;
-		velocidade = 1;
-		dx = dy = 0;
+		setaPos(1, 1);
 		vidas = 3;
-		vivo = true;
+		potenciaDaRaquete = numRaquetes = velocidade = 1;
+		espelha = true;
+	}
+
+	void reseta(){
+		setaPos(1, 1);
+		numRaquetes += raquetes.size();
+		raquetes.clear();
 	}
 
 	void setaPos(int nx, int ny){
@@ -34,24 +40,29 @@ class Player{
 		dx = 0;
 		dy = 0;
 		vivo = true;
+		framesProximo = 0;
 	}
 
 	bool movendo(){
-		return dx || dy;
+		return !(inteiro(x) && inteiro(y));
 	}
 
-	void colocaRaquete(std::list<Raquete> &raquetes, Mapa &mapa){
+	void colocaRaquete(Mapa &mapa){
 		int i = x / FPS, j = y / FPS;
-		if(!vivo || movendo() || raquetes.size() == numRaquetes || mapa.getPos(i, j) & RAQUETE)
+		if(!vivo || movendo() || numRaquetes == 0 || mapa.getPos(i, j) & RAQUETE){
+			framesProximo = FPS / 6;
 			return;
+		}
 		
 		mapa.setPos(i, j, RAQUETE);
 		raquetes.emplace_back(i, j, potenciaDaRaquete, 3 * FPS);
+		numRaquetes--;
+		framesProximo = 0;
 	}
 
-	void comecaMovimento(int ndx, int ndy, Mapa mapa){
+	void comecaMovimento(int ndx, int ndy, Mapa &mapa){
 		int i = x / FPS, j = y / FPS;
-        if(movendo() || mapa.getPos(i + ndx, j + ndy) & (BLOCO | PAREDE | RAQUETE))
+        if(!vivo || movendo() || mapa.getPos(i + ndx, j + ndy) & (BLOCO | PAREDE | RAQUETE))
             return;
 		
 		if(ndx > 0)
@@ -65,6 +76,8 @@ class Player{
 	void mover(Mapa &mapa){
 		x += velocidades[velocidade] * dx;
 		y += velocidades[velocidade] * dy;
+		if(framesProximo)
+			framesProximo--;
 
 		if(inteiro(x) && inteiro(y)){
 			dx = 0;
@@ -87,9 +100,13 @@ class Player{
 				mapa.removePos(i, j, RAQBONUS);
 			}
 			if(a & BOTA){
-				if(velocidade < VELOCIDADEMAX)
+				if(velocidade < VELOCIDADEMAX - 1)
 					velocidade++;
 				mapa.removePos(i, j, BOTA);
+			}
+
+			if(framesProximo > 0){
+				colocaRaquete(mapa);
 			}
 		}
 	}

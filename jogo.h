@@ -89,6 +89,10 @@ class Jogo{
     }
 
     void desenha(){
+		stopAudio(&audioPlayers[0]);
+		stopAudio(&audioPlayers[1]);
+		startAudio(&audioPlayers[2]);
+        
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         ajustaEscala();

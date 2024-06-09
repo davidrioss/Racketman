@@ -179,6 +179,10 @@ void DesenhaMosquitinho(){
 }
 
 void DesenhaMenu(){
+	stopAudio(&audioPlayers[1]);
+	stopAudio(&audioPlayers[2]);
+	startAudio(&audioPlayers[0]);
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluOrtho2D(0.0f, 15.0f, 0.0f, 15.0f);
@@ -188,6 +192,10 @@ void DesenhaMenu(){
 }
 
 void DesenhaGameover(){
+	stopAudio(&audioPlayers[0]);
+	stopAudio(&audioPlayers[2]);
+	startAudio(&audioPlayers[1]);
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluOrtho2D(0.0f, 15.0f, 0.0f, 15.0f);
@@ -199,7 +207,15 @@ void DesenhaGameover(){
 
 void DesenhaPausado(){
 	jogo.desenha();
-	desenhaTextura(T_PAUSE, 5.0f, 5.0f, 10.0f, 10.0f);
+	if(jogo.mapa.linhas > jogo.mapa.colunas){
+		float x = jogo.mapa.colunas / 3.0f;
+		float y = (jogo.mapa.linhas - jogo.mapa.colunas) / 2.0f + x;
+		desenhaTextura(T_PAUSE, x, y, 2 * x, x + y);
+	}else{
+		float y = jogo.mapa.linhas / 3.0f;
+		float x = (jogo.mapa.colunas - jogo.mapa.linhas) / 2.0f + y;
+		desenhaTextura(T_PAUSE, x, y, x + y, 2 * y);
+	}
 }
 
 void DesenhaTela(){
@@ -208,26 +224,14 @@ void DesenhaTela(){
 	{
 	case MENU:
 		DesenhaMenu();
-		stopAudio(&audioPlayers[1]);
-		stopAudio(&audioPlayers[2]);
-		startAudio(&audioPlayers[0]);
 		break;
 	case GAMEOVER:
 		DesenhaGameover();
-		stopAudio(&audioPlayers[0]);
-		stopAudio(&audioPlayers[2]);
-		startAudio(&audioPlayers[1]);
 		break;
 	case PAUSE:
-		stopAudio(&audioPlayers[0]);
-		stopAudio(&audioPlayers[1]);
-		startAudio(&audioPlayers[2]);
 		DesenhaPausado();
 		break;
 	case JOGO:
-		stopAudio(&audioPlayers[0]);
-		stopAudio(&audioPlayers[1]);
-		startAudio(&audioPlayers[2]);
 		jogo.desenha();
 		break;
 	}

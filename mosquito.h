@@ -91,27 +91,6 @@ class Mosquito{
     void desenha(){
 		float X = (float) x / FPS;
 		float Y = (float) y / FPS;
-        glColor3f(0.0f,0.0f,0.0f); //corpo
-        glRectf(X+0.1, Y+0.3, X+0.25, Y+0.5);
-        glRectf(X+0.25, Y+0.3, X+0.5, Y+0.6);
-        glRectf(X+0.5, Y+0.35, X+1, Y+0.55);
-        glRectf(X, Y + 0.03 + sin(frame/6.0) * 0.02, X+0.1, Y+0.4);
-		float pe = Y + 0.12 + sin(frameCaminhando / 5) * 0.02;
-		float pd = Y + 0.17 + cos(frameCaminhando / 5) * 0.02;
-        glRectf(X+0.25, pe, X+0.3, Y + 0.30);
-        glRectf(X+0.35, pe, X+0.4, Y + 0.30);
-        glRectf(X+0.45, pe, X+0.5, Y + 0.30);
-        glRectf(X+0.55, pd, X+0.6, Y + 0.35);
-        glRectf(X+0.65, pd, X+0.7, Y + 0.35);
-        glRectf(X+0.75, pd, X+0.8, Y + 0.35);
-        glColor3f(1.0f,1.0f,1.0f); //listras
-        glRectf(X+0.6, Y+0.35, X+0.65, Y+0.55);
-        glRectf(X+0.75, Y+0.35, X+0.8, Y+0.55);
-        glRectf(X+0.9, Y+0.35, X+0.95, Y+0.55);
-        glColor3f(1.0f,0.0f,0.0f); //olho
-        glRectf(X+0.1, Y+0.4, X+0.15, Y+0.48);
-        glColor3f(0.678400f,0.917600f,0.917600f); //asas
-        glRectf(X+0.1, Y+0.6, X+0.40, Y+0.95+sin(frame/2.0)*0.05);
-        glRectf(X+0.5, Y+0.6, X+0.95, Y+0.80+cos(frame/2.0)*0.05);	
+		desenhaTextura(T_MOSQUITO, X, Y, X + 1, Y + 1);
     }
 };

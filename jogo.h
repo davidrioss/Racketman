@@ -59,21 +59,21 @@ class Jogo{
     void desenhaVidas(){
         int b = mapa.linhas - 1;
         for(int a = 1; a <= player.vidas; a++){
-            glColor3f(1.0f,0.0f,0.0f);
-            glBegin( GL_POLYGON);
-                glVertex3f(a+0.5, b, 0.0f);
-                glVertex3f(a+1.0, b+0.6, 0.0f);
-                glVertex3f(a+0.7, b+1, 0.0f);
-                glVertex3f(a+0.5, b+0.8, 0.0f);
-                glVertex3f(a+0.3, b+1, 0.0f);
-                glVertex3f(a, b+0.6, 0.0f);
-                glVertex3f(a+0.5, b, 0.0f);
-            glEnd();
+            desenhaTextura(T_CORACAO, a, b, a + 1, b + 1);
         }
     }
     
-    void desenhaPontuacao(){
-        
+    void desenhaPontuacao(bool desenhaPlacar){
+        if(desenhaPlacar){
+            float x = mapa.colunas - 3.3f;
+            float y = mapa.linhas - 1;
+            // desenhaTextura(T_PLACAR, x, y, x + 2.6, y + 1);
+        }
+        for(int k = 3, p = pontos; k != -1; k--, p /= 10){
+            float x = mapa.colunas - 3.0f + k * 0.5;
+            float y = mapa.linhas - 1;
+            desenhaTextura(p % 10, x, y, x + 0.5, y + 1);
+        }
     }
 
     void ajustaEscala(){
@@ -96,12 +96,10 @@ class Jogo{
 
         mapa.desenha();
         desenhaVidas();
-        desenhaPontuacao();
+        desenhaPontuacao(true);
 
         for(auto &mosquito : mosquitos)
 		    mosquito.desenha();
-        for(auto &raquete : raquetes)
-            raquete.desenha();
         player.desenha();
     }
 

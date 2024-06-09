@@ -8,17 +8,18 @@
 
 #include <GL/glut.h>
 
+#define maximo(a, b) ((a) > (b) ? (a) : (b))
+#define minimo(a, b) ((a) < (b) ? (a) : (b))
+
 #define VIDAMAX 5
 #define POTENCIAMAX 10
 #define RAQUETESMAX 10
 #define VELOCIDADEMAX 7
-#define NUM_AUDIOS 3
 
 int largura, altura;
 int dirs[][2] = {1,0, -1,0, 0,1, 0,-1};
 int velocidades[] = {1, 2, 3, 4, 6, 10, 15, 20};
 GLuint textureID[40];
-AudioPlayer audioPlayers[NUM_AUDIOS];
 
 enum Entidades{
 	BLOCO    = 1,
@@ -48,6 +49,8 @@ enum Texturas{
 	T_PAUSE,
 	T_PLACAR,
 	T_MOSQUITINHO,
+	T_TENIS,
+	T_RAQUETEBONUS
 };
 
 bool inteiro(int a){

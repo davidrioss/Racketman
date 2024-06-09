@@ -76,13 +76,13 @@ class Mapa{
                     desenhaTextura(T_BATERIA, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
                 }
                 if(grid[i][j] & RAQBONUS){
-
+                    desenhaTextura(T_RAQUETEBONUS, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
                 }
                 if(grid[i][j] & BOTA){
-
+                    desenhaTextura(T_TENIS, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
                 }
                 if(grid[i][j] & ESCADA){
-
+                    desenhaTextura(1, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
                 }
                 if(grid[i][j] & RAQUETE){
                     desenhaTextura(T_RAQUETE, i, j, i + 1, j + 1);

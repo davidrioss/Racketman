@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#define NUM_AUDIOS 3
 
 using namespace std;
 
@@ -92,6 +93,8 @@ void InicializarTexturas () {
     loadTexture("pause.png", T_PAUSE);
     loadTexture("placar.png", T_PLACAR);
     loadTexture("mosquitinho.png", T_MOSQUITINHO);
+	loadTexture("tenis.png", T_TENIS);
+	loadTexture("raquetebonus.png", T_RAQUETEBONUS);
 }
 
 void Teclado1(unsigned char key, int x, int y)

@@ -1,10 +1,15 @@
-// #define MINIAUDIO_IMPLEMENTATION
-#ifdef MINIAUDIO_IMPLEMENTATION
+#pragma once
+
+#define NUM_AUDIOS 3
+#ifndef SEMAUDIO
+#define MINIAUDIO_IMPLEMENTATION
 #include "miniaudio.h"
 typedef struct {
     ma_decoder decoder;
     ma_device device;
 } AudioPlayer;
+
+AudioPlayer audioPlayers[NUM_AUDIOS];
 
 void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount) {
     ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
@@ -65,6 +70,7 @@ void cleanupAudios() {
 }
 #else
 typedef int AudioPlayer;
+AudioPlayer audioPlayers[NUM_AUDIOS];
 void initAudio(AudioPlayer* player, const char* filepath){}
 void startAudio(AudioPlayer* player){}
 void stopAudio(AudioPlayer* player){}

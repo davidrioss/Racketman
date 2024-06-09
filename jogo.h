@@ -18,7 +18,7 @@ class Jogo{
     Mapa mapa;
     Player player;
 
-    Jogo() : mapa(5, 5, 60) {
+    Jogo() : mapa(9, 9, 60) {
         player = Player();
         
         srand(time(NULL));
@@ -67,12 +67,12 @@ class Jogo{
         if(desenhaPlacar){
             float x = mapa.colunas - 3.3f;
             float y = mapa.linhas - 1;
-            // desenhaTextura(T_PLACAR, x, y, x + 2.6, y + 1);
+            desenhaTextura(T_PLACAR, x, y, x + 2.6, y + 1);
         }
         for(int k = 3, p = pontos; k != -1; k--, p /= 10){
             float x = mapa.colunas - 3.0f + k * 0.5;
             float y = mapa.linhas - 1;
-            desenhaTextura(p % 10, x, y, x + 0.5, y + 1);
+            desenhaTextura(p % 10, x + 0.05f, y + 0.10f, x + 0.45f, y + 0.90f);
         }
     }
 
@@ -114,13 +114,14 @@ class Jogo{
     void proximaFase(){
         fase++;
         player.setaPos(1, 1);
-        mapa = Mapa(5 + fase * 2, 5 + fase * 2, 60);
+        int tamanho = maximo(9, 5 + fase * 2);
+        mapa = Mapa(tamanho, tamanho, 60);
         
         raquetes.clear();
         int qtdMosquitos = fase * 2;
         mosquitos.clear();
         while(qtdMosquitos--){
-            mosquitos.emplace_back(fase / 2, 0, mapa);
+            mosquitos.emplace_back(minimo(fase / 2, VELOCIDADEMAX), 0, mapa);
         }
     }
 

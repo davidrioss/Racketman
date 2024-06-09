@@ -17,6 +17,7 @@ class Player{
     int numRaquetes;
 	int vidas;
 	bool vivo;
+	bool espelha = true;
 
 	Player(){
         x = y = FPS;
@@ -52,6 +53,11 @@ class Player{
 		int i = x / FPS, j = y / FPS;
         if(movendo() || mapa.getPos(i + ndx, j + ndy) & (BLOCO | PAREDE | RAQUETE))
             return;
+		
+		if(ndx > 0)
+			espelha = true;
+		else if(ndx < 0)
+			espelha = false;
 		dx = ndx;
 		dy = ndy;
 	}
@@ -90,6 +96,9 @@ class Player{
 			return;
 		float X = (float) x / FPS;
 		float Y = (float) y / FPS;
-		desenhaTextura(T_JOGADOR, X, Y, X + 1, Y + 1);
+		if(espelha)
+			desenhaTexturaEspelhado(T_JOGADOR, X, Y, X + 1, Y + 1);
+		else
+			desenhaTextura(T_JOGADOR, X, Y, X + 1, Y + 1);
 	}
 };

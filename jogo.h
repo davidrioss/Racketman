@@ -18,7 +18,7 @@ class Jogo{
     Mapa mapa;
     Player player;
 
-    Jogo() : mapa(5, 9, 60) {
+    Jogo() : mapa(9, 9, 60) {
         player = Player();
         
         srand(time(NULL));
@@ -155,6 +155,7 @@ class Jogo{
             
             // Colisão com a explosão
             if(mapa.getPosMov(mosquito->x, mosquito->y) & EXPLOSAO){
+                pontos += mosquito->velocidade + 1;
                 mosquito->matar(mapa);
                 mosquito = mosquitos.erase(mosquito);
             }else{

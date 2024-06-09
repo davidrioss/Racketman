@@ -6,6 +6,7 @@
 #include <vector>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#define NUM_AUDIOS 3
 
 #define MINIAUDIO_IMPLEMENTATION
 #ifdef MINIAUDIO_IMPLEMENTATION
@@ -14,6 +15,8 @@ typedef struct {
     ma_decoder decoder;
     ma_device device;
 } AudioPlayer;
+
+AudioPlayer audioPlayers[NUM_AUDIOS];
 
 void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount) {
     ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
@@ -80,7 +83,6 @@ void stopAudio(AudioPlayer* player){}
 void initializeAudios(){}
 void cleanupAudios(){}
 #endif
-#define NUM_AUDIOS 3
 
 using namespace std;
 
@@ -103,7 +105,7 @@ int pontos=0, vidas=3, potenciaDaRaquete=1, contadorMosquitos=0, mouseX, mouseY;
 int menuItem = 0;
 Estado estado = menu;
 GLuint textureID[40];
-AudioPlayer audioPlayers[NUM_AUDIOS];
+
 
 // Função para carregar a imagem e criar uma textura
 void loadTexture(const char* filename, int n) { 
@@ -173,6 +175,8 @@ void InicializarTexturas () {
     loadTexture("pause.png", 21);
     loadTexture("placar.png", 22);
     loadTexture("mosquitinho.png", 23);
+    loadTexture("tenis.png", 24);
+    loadTexture("raquetebonus.png", 25);
 }
 
 

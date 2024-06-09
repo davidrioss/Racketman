@@ -135,16 +135,27 @@ void Teclado2(int key, int x, int y){
 	}
 }
 
+bool MouseEmNovo(float x, float y){
+	x /= largura;
+	y /= altura;
+	return 0.33 <= x && x <= 0.67 && 0.73 <= y && y <= 0.81;
+}
+
+bool MouseEmSair(float x, float y){
+	x /= largura;
+	y /= altura;
+	return 0.42 <= x && x <= 0.57 && 0.82 <= y && y <= 0.90;
+}
+
 void GerenciaMouse(int button, int state, int x, int y)
 {
     if (button == GLUT_LEFT_BUTTON){
         if (state == GLUT_UP && (tela == MENU || tela == GAMEOVER)) {     
-	        if (x>=238 && x<=466 && y>=510 && y<=565){
+	        if (MouseEmNovo(x, y))
 				resetaJogo();
-			}
-	        if (x>=300 && x<=400 && y>=575 && y<=630)
-	         	exit(0);      
-	        }
+	        if (MouseEmSair(x, y))
+	         	exit(0);
+		}
 	}
 }
 
@@ -170,12 +181,10 @@ void DinamicaDoJogo(int frame)
 }
 
 void DesenhaMosquitinho(){
-	if (mouseX>=238 && mouseX<=466 && mouseY>=510 && mouseY<=565){
+	if (MouseEmNovo(mouseX, mouseY))
 		desenhaTextura(T_MOSQUITINHO, 9.90f, 2.85f, 11.10f, 4.05f);
-	}
-    if (mouseX>=300 && mouseX<=400 && mouseY>=575 && mouseY<=630){
+    if (MouseEmSair(mouseX, mouseY))
 		desenhaTextura(T_MOSQUITINHO, 8.55f, 1.50f, 9.75f, 2.7f);
-	}
 }
 
 void DesenhaMenu(){
@@ -200,9 +209,9 @@ void DesenhaGameover(){
 	glLoadIdentity();
 	gluOrtho2D(0.0f, 15.0f, 0.0f, 15.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-    DesenhaMosquitinho();
 	desenhaTextura(T_GAMEOVER, 0.0f, 0.0f, 15.0f, 15.0f);
-    jogo.desenhaPontuacao(false);
+    DesenhaMosquitinho();
+    jogo.desenhaPontuacao(true, 11.7f, 13.5f);
 }
 
 void DesenhaPausado(){

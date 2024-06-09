@@ -18,8 +18,8 @@ class Mosquito{
 
 	Mosquito(int velocidade, int tipo, Mapa &mapa) : velocidade(velocidade), tipo(tipo){
 		do{
-			x = (rand() % (mapa.linhas - 3)) + 2;
-			y = (rand() % (mapa.colunas - 3)) + 2;
+			x = (rand() % (mapa.colunas - 3)) + 2;
+			y = (rand() % (mapa.linhas - 3)) + 2;
 		}while(x + y < 5 || mapa.getPos(x, y) & BLOCO);
 		mapa.grid[x][y] = MOSQUITO;
 		

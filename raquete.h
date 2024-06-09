@@ -4,8 +4,6 @@
 
 #include <functional>
 
-#include <GL/glut.h>
-
 class Raquete{
     public:
 	int x;

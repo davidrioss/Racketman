@@ -42,6 +42,33 @@ class Mosquito{
 		frame = rand();
 	}
 
+	inline bool proximaDirecao0(int &i, int &j, Mapa &mapa){
+		if(!(mapa.getPos(i + dx, j + dy) & (BLOCO | PAREDE | RAQUETE | MOSQUITO)))
+			return true;
+
+		if(movendo){
+			dx *= -1;
+			dy *= -1;
+			espera = FPS;
+			movendo = false;
+			return false;
+		}
+
+		for(int k = 0; k < 4; k++){
+			if(!(mapa.getPos(i + dirs[k][0], j + dirs[k][1]) & (BLOCO | PAREDE | RAQUETE | MOSQUITO))){
+				dx = dirs[k][0];
+				dy = dirs[k][1];
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	inline bool proximaDirecao1(int &i, int &j, Mapa &mapa){
+
+	}
+
 	void mover(Mapa &mapa){
 		frame++;
 		if(espera > 0){
@@ -53,29 +80,24 @@ class Mosquito{
 			int i = (float) x / FPS, j = (float) y / FPS;
 			if(movendo)
 				mapa.removePos(i - dx, j - dy, MOSQUITO);
-
-			if(mapa.getPos(i + dx, j + dy) & (BLOCO | PAREDE | RAQUETE | MOSQUITO)){
-				dx *= -1;
-				dy *= -1;
-				if(movendo){
-					espera = FPS;
-					movendo = false;
-				}else{
-					for(int k = 0; k < 4; k++){
-						if(!(mapa.getPos(i + dirs[k][0], j + dirs[k][1]) & (BLOCO | PAREDE | RAQUETE | MOSQUITO))){
-							dx = dirs[k][0];
-							dy = dirs[k][1];
-							break;
-						}
-					}
-				}
-				return;
+			
+			bool mover;
+			switch (tipo)
+			{
+			case 0:
+				mover = proximaDirecao0(i, j, mapa);
+				break;
+			case 1:
+				mover = proximaDirecao1(i, j, mapa);
+			default:
+				break;
 			}
-
+			
+			if(!mover)
+				return;
 			mapa.setPos(i + dx, j + dy, MOSQUITO);
 		}
 
-		
 		if(dx > 0)
 			espelha = false;
 		else if(dx < 0)
@@ -97,9 +119,10 @@ class Mosquito{
     void desenha(){
 		float X = (float) x / FPS;
 		float Y = (float) y / FPS + sin(frame / 5) * 0.05;
+		int t = T_MOSQUITO + (frame % 10) / 5;
 		if(espelha)
-			desenhaTexturaEspelhado(T_MOSQUITO, X, Y, X + 1, Y + 1);
+			desenhaTexturaEspelhado(t, X, Y, X + 1, Y + 1);
 		else
-			desenhaTextura(T_MOSQUITO, X, Y, X + 1, Y + 1);
+			desenhaTextura(t, X, Y, X + 1, Y + 1);
     }
 };

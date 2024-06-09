@@ -24,7 +24,7 @@ GLuint textureID[40];
 enum Entidades{
 	BLOCO    = 1,
 	PAREDE   = 2,
-	ESCADA   = 1 << 2,
+	PORTA   = 1 << 2,
 	RAQUETE  = 1 << 3,
 	EXPLOSAO = 1 << 4,
     MOSQUITO = 1 << 5,
@@ -41,8 +41,8 @@ enum Texturas{
 	T_PEDRA,
 	T_PAREDE,
 	T_JOGADOR,
-	T_MOSQUITO,
-	T_RAQUETE,
+	T_MOSQUITO = 18,
+	T_RAQUETE = 20,
 	T_CORACAO,
 	T_RAIO,
 	T_BATERIA,
@@ -50,7 +50,8 @@ enum Texturas{
 	T_PLACAR,
 	T_MOSQUITINHO,
 	T_TENIS,
-	T_RAQUETEBONUS
+	T_RAQUETEBONUS,
+	T_PORTA
 };
 
 bool inteiro(int a){

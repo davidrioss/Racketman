@@ -20,6 +20,7 @@ class Player{
 	bool espelha;
     std::list<Raquete> raquetes{};
 	int framesProximo;
+	int framesAndando;
 
 	Player(){
 		setaPos(1, 1);
@@ -40,7 +41,7 @@ class Player{
 		dx = 0;
 		dy = 0;
 		vivo = true;
-		framesProximo = 0;
+		framesAndando = framesProximo = 0;
 	}
 
 	bool movendo(){
@@ -80,6 +81,7 @@ class Player{
 			framesProximo--;
 
 		if(inteiro(x) && inteiro(y)){
+			framesAndando = 0;
 			dx = 0;
 			dy = 0;
 			int i = x / FPS, j = y / FPS;
@@ -116,9 +118,10 @@ class Player{
 			return;
 		float X = (float) x / FPS;
 		float Y = (float) y / FPS;
+		int t = T_JOGADOR + (framesAndando++ % 15) / 5;
 		if(espelha)
-			desenhaTexturaEspelhado(T_JOGADOR, X, Y, X + 1, Y + 1);
+			desenhaTexturaEspelhado(t, X, Y, X + 1, Y + 1);
 		else
-			desenhaTextura(T_JOGADOR, X, Y, X + 1, Y + 1);
+			desenhaTextura(t, X, Y, X + 1, Y + 1);
 	}
 };

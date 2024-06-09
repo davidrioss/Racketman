@@ -174,7 +174,7 @@ class Jogo{
         auto a = mapa.getPosMov(player.x, player.y);
         if(a & EXPLOSAO)
             morreu();
-        else if(a & ESCADA)
+        else if(a & PORTA)
             proximaFase();
 
         // Movimenta mosquitos
@@ -197,7 +197,7 @@ class Jogo{
         }
 
         if(mosquitos.empty()){
-            mapa.setPos(1, 1, ESCADA);
+            mapa.setPos(1, 1, PORTA);
         }
     }
 };

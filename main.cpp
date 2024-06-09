@@ -85,7 +85,10 @@ void InicializarTexturas () {
     loadTexture("imagens/pedra.jpg", T_PEDRA);
     loadTexture("imagens/parede.png", T_PAREDE);
     loadTexture("imagens/jogador.png", T_JOGADOR);
+    loadTexture("imagens/jogador2.png", T_JOGADOR + 1);
+    loadTexture("imagens/jogador3.png", T_JOGADOR + 2);
     loadTexture("imagens/mosquito.png", T_MOSQUITO);
+    loadTexture("imagens/mosquito2.png", T_MOSQUITO + 1);
     loadTexture("imagens/raquete.png", T_RAQUETE);
     loadTexture("imagens/coracao.png", T_CORACAO);
     loadTexture("imagens/raio.png", T_RAIO);
@@ -95,6 +98,7 @@ void InicializarTexturas () {
     loadTexture("imagens/mosquitinho.png", T_MOSQUITINHO);
 	loadTexture("imagens/tenis.png", T_TENIS);
 	loadTexture("imagens/raquetebonus.png", T_RAQUETEBONUS);
+	loadTexture("imagens/porta.png", T_PORTA);
 }
 
 void Teclado(unsigned char key, int x, int y)

@@ -69,6 +69,9 @@ class Mapa{
                 }
 
                 desenhaTextura(T_GRAMA, i, j, i + 1, j + 1);
+                if(grid[i][j] & PORTA){
+                    desenhaTextura(T_PORTA, i, j, i + 1, j + 1);
+                }
                 if(grid[i][j] & VIDA){
                     desenhaTextura(T_CORACAO, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
                 }
@@ -80,9 +83,6 @@ class Mapa{
                 }
                 if(grid[i][j] & BOTA){
                     desenhaTextura(T_TENIS, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
-                }
-                if(grid[i][j] & ESCADA){
-                    desenhaTextura(1, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
                 }
                 if(grid[i][j] & RAQUETE){
                     desenhaTextura(T_RAQUETE, i, j, i + 1, j + 1);

@@ -12,8 +12,8 @@
 #define minimo(a, b) ((a) < (b) ? (a) : (b))
 
 #define VIDAMAX 5
-#define POTENCIAMAX 10
-#define RAQUETESMAX 10
+#define POTENCIAMAX 9
+#define RAQUETESMAX 9
 #define VELOCIDADEMAX 7
 
 int largura, altura;
@@ -75,4 +75,12 @@ void desenhaTexturaEspelhado(int textura, float xi, float yi, float xf, float yf
 		glTexCoord2f(1.0f, 1.0f); glVertex2f(xi, yi);
 		glTexCoord2f(0.0f, 1.0f); glVertex2f(xf, yi);
     glEnd();
+}
+
+void desenhaTexturaQuadrado(int textura, float x, float y, float t){
+	desenhaTextura(textura, x, y, x + t, y + t);
+}
+
+void desenhaNumero(int numero, float x, float y, float t){
+	desenhaTextura(numero, x, y, x + t / 2, y + t);
 }

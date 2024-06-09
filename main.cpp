@@ -115,6 +115,25 @@ void Teclado1(unsigned char key, int x, int y)
 			tela = PAUSE;
 	}
 
+	if(key == 'n'){
+		jogo.proximaFase();
+	}
+
+	if(key == '1'){
+		if(jogo.player.numRaquetes < RAQUETESMAX)
+			jogo.player.numRaquetes++;
+	}
+
+	if(key == '2'){
+		if(jogo.player.potenciaDaRaquete < POTENCIAMAX)
+			jogo.player.potenciaDaRaquete++;
+	}
+
+	if(key == '3'){
+		if(!jogo.player.movendo() && jogo.player.velocidade < VELOCIDADEMAX)
+			jogo.player.velocidade++;
+	}
+
 	//botão enter para começar
 	if(key == 13){
 		if(tela == MENU || tela == GAMEOVER){

@@ -101,6 +101,15 @@ class Jogo{
         for(auto &mosquito : mosquitos)
 		    mosquito.desenha();
         player.desenha();
+
+        auto desenha = [](float x, float y, Texturas t, int q){
+            desenhaTexturaQuadrado(t, x + 0.1f, y + 0.1f, 0.8f);
+            desenhaNumero(q, x + 0.6f, y + 0.1f, 0.7f);
+        };
+        
+        desenha(1.0, 0.0, T_RAQUETE, player.numRaquetes - raquetes.size());
+        desenha(2.0, 0.0, T_BATERIA, player.potenciaDaRaquete);
+        desenha(3.0, 0.0, T_TENIS  , player.velocidade);
     }
 
     void morreu(){

@@ -13,14 +13,14 @@ class Mosquito{
 	int tipo;
 	int espera;
 	int frame;
-	bool espelha = false;
+	bool espelha;
 	bool movendo;
 
 	Mosquito(int velocidade, int tipo, Mapa &mapa) : velocidade(velocidade), tipo(tipo){
 		do{
 			x = (rand() % (mapa.colunas - 3)) + 2;
 			y = (rand() % (mapa.linhas - 3)) + 2;
-		}while(x + y < 5 || mapa.getPos(x, y) & BLOCO);
+		}while(x + y < 5 || mapa.getPos(x, y) & (BLOCO | MOSQUITO));
 		mapa.grid[x][y] = MOSQUITO;
 		
 		if(mapa.getPos(x + 1, y) & BLOCO && mapa.getPos(x - 1, y)){
@@ -37,6 +37,8 @@ class Mosquito{
 		x *= FPS;
 		y *= FPS;
 		movendo = false;
+		espera = 0;
+		espelha = false;
 	}
 
 	void mover(Mapa &mapa){

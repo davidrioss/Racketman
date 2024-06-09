@@ -39,11 +39,12 @@ class Mosquito{
 		movendo = false;
 		espera = 0;
 		espelha = false;
+		frame = rand();
 	}
 
 	void mover(Mapa &mapa){
 		frame++;
-		if(espera){
+		if(espera > 0){
 			espera -= velocidades[velocidade];
 			return;
 		}
@@ -95,7 +96,7 @@ class Mosquito{
 
     void desenha(){
 		float X = (float) x / FPS;
-		float Y = (float) y / FPS;
+		float Y = (float) y / FPS + sin(frame / 5) * 0.05;
 		if(espelha)
 			desenhaTexturaEspelhado(T_MOSQUITO, X, Y, X + 1, Y + 1);
 		else

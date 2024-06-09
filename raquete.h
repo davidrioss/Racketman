@@ -29,7 +29,7 @@ class Raquete{
     }
 
     bool atualiza(Mapa &mapa){
-        if(--frames == -FPS / 3){
+        if(--frames == -FPS / 4){
             mapa.grid[x][y] = 0;
             atualizaRaio(mapa, [&mapa](int x, int y){
                 if(mapa.getPos(x, y) & PAREDE)

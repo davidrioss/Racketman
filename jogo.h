@@ -106,7 +106,7 @@ class Jogo{
             desenhaTexturaQuadrado(t, x + 0.1f, y + 0.1f, 0.8f);
             desenhaNumero(q, x + 0.6f, y + 0.1f, 0.7f);
         };
-        
+
         desenha(1.0, 0.0, T_RAQUETE, player.numRaquetes - raquetes.size());
         desenha(2.0, 0.0, T_BATERIA, player.potenciaDaRaquete);
         desenha(3.0, 0.0, T_TENIS  , player.velocidade);
@@ -123,14 +123,14 @@ class Jogo{
     void proximaFase(){
         fase++;
         player.setaPos(1, 1);
-        int tamanho = maximo(9, 5 + fase * 2);
-        mapa = Mapa(tamanho, tamanho, 60);
+        int tamanho = minimo(9 + fase / 3 * 2, 15);
+        mapa = Mapa(tamanho, tamanho, maximo(60 - fase, 20));
         
         raquetes.clear();
-        int qtdMosquitos = fase * 2;
+        int qtdMosquitos = minimo(fase + 1, 10);
         mosquitos.clear();
         while(qtdMosquitos--){
-            mosquitos.emplace_back(minimo(fase / 2, VELOCIDADEMAX), 0, mapa);
+            mosquitos.emplace_back(minimo(fase / 3, VELOCIDADEMAX), 0, mapa);
         }
     }
 

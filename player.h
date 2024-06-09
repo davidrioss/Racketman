@@ -75,15 +75,18 @@ class Player{
 				if(vidas < VIDAMAX)
 					vidas++;
 				mapa.removePos(i, j, VIDA);
-			}else if(a & RAQPODER){
+			}
+			if(a & RAQPODER){
 				if(potenciaDaRaquete < POTENCIAMAX)
 					potenciaDaRaquete++;
 				mapa.removePos(i, j, RAQPODER);
-			}else if(a & RAQBONUS){
+			}
+			if(a & RAQBONUS){
 				if(potenciaDaRaquete < RAQUETESMAX)
 					numRaquetes++;
 				mapa.removePos(i, j, RAQBONUS);
-			}else if(a & BOTA){
+			}
+			if(a & BOTA){
 				if(velocidade < VELOCIDADEMAX)
 					velocidade++;
 				mapa.removePos(i, j, BOTA);

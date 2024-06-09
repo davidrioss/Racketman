@@ -84,11 +84,15 @@ void InicializarTexturas () {
     loadTexture("imagens/grama.jpg", T_GRAMA);
     loadTexture("imagens/pedra.jpg", T_PEDRA);
     loadTexture("imagens/parede.png", T_PAREDE);
-    loadTexture("imagens/jogador.png", T_JOGADOR);
+    loadTexture("imagens/jogador1.png", T_JOGADOR);
     loadTexture("imagens/jogador2.png", T_JOGADOR + 1);
     loadTexture("imagens/jogador3.png", T_JOGADOR + 2);
-    loadTexture("imagens/mosquito.png", T_MOSQUITO);
-    loadTexture("imagens/mosquito2.png", T_MOSQUITO + 1);
+    loadTexture("imagens/mosquito01.png", T_MOSQUITO);
+    loadTexture("imagens/mosquito02.png", T_MOSQUITO + 1);
+    loadTexture("imagens/mosquito11.png", T_MOSQUITO + 2);
+    loadTexture("imagens/mosquito12.png", T_MOSQUITO + 3);
+    loadTexture("imagens/mosquito21.png", T_MOSQUITO + 4);
+    loadTexture("imagens/mosquito22.png", T_MOSQUITO + 5);
     loadTexture("imagens/raquete.png", T_RAQUETE);
     loadTexture("imagens/coracao.png", T_CORACAO);
     loadTexture("imagens/raio.png", T_RAIO);

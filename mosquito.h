@@ -3,12 +3,12 @@
 #include "mapa.h"
 
 #include <random>
-#include <GL/glut.h>
+#include <set>
 
 class Mosquito{
 	public:
 	int x, y;
-	int dx, dy;
+	int dx, dy, dir;
 	int velocidade;
 	int tipo;
 	int espera;
@@ -16,23 +16,14 @@ class Mosquito{
 	bool espelha;
 	bool movendo;
 
-	Mosquito(int velocidade, int tipo, Mapa &mapa) : velocidade(velocidade), tipo(tipo){
+	Mosquito(int velocidade, int tipo, Mapa &mapa) : velocidade(velocidade), tipo(rand() % 3){
 		do{
 			x = (rand() % (mapa.colunas - 3)) + 2;
 			y = (rand() % (mapa.linhas - 3)) + 2;
 		}while(x + y < 5 || mapa.getPos(x, y) & (BLOCO | MOSQUITO));
 		mapa.grid[x][y] = MOSQUITO;
 		
-		if(mapa.getPos(x + 1, y) & BLOCO && mapa.getPos(x - 1, y)){
-			dx = 0;
-			dy = 1;
-		}else if(mapa.getPos(x, y + 1) & BLOCO && mapa.getPos(x, y - 1)){
-			dx = 1;
-			dy = 0;
-		}else{
-			dx = rand() % 2;
-			dy = !dx;
-		}
+		setaDirecao(rand() % 4);
 
 		x *= FPS;
 		y *= FPS;
@@ -42,13 +33,18 @@ class Mosquito{
 		frame = rand();
 	}
 
-	inline bool proximaDirecao0(int &i, int &j, Mapa &mapa){
+	void setaDirecao(int d){
+		dir = d;
+		dx = dirs[dir][0];
+		dy = dirs[dir][1];
+	}
+
+	bool proximaDirecao0(int &i, int &j, Mapa &mapa){
 		if(!(mapa.getPos(i + dx, j + dy) & (BLOCO | PAREDE | RAQUETE | MOSQUITO)))
 			return true;
 
 		if(movendo){
-			dx *= -1;
-			dy *= -1;
+			setaDirecao((dir + 2) % 4);
 			espera = FPS;
 			movendo = false;
 			return false;
@@ -56,8 +52,7 @@ class Mosquito{
 
 		for(int k = 0; k < 4; k++){
 			if(!(mapa.getPos(i + dirs[k][0], j + dirs[k][1]) & (BLOCO | PAREDE | RAQUETE | MOSQUITO))){
-				dx = dirs[k][0];
-				dy = dirs[k][1];
+				setaDirecao(k);
 				return true;
 			}
 		}
@@ -65,8 +60,47 @@ class Mosquito{
 		return false;
 	}
 
-	inline bool proximaDirecao1(int &i, int &j, Mapa &mapa){
+	bool proximaDirecao1(int &i, int &j, Mapa &mapa){
+		if(!movendo && !(mapa.getPos(i + dx, j + dy) & (BLOCO | PAREDE | RAQUETE | MOSQUITO)))
+			return true;
+		
+		std::set<int> dirsLivres;
+		for(int k = 0; k < 4; k++)
+			if(!(mapa.getPos(i + dirs[k][0], j + dirs[k][1]) & (BLOCO | PAREDE | RAQUETE | MOSQUITO)))
+				dirsLivres.insert(k);
+		
+		if(dirsLivres.empty()){
+			if(movendo){
+				setaDirecao(rand() % 4);
+				movendo = false;
+				espera = FPS;
+			}
 
+			return false;
+		}
+
+		if(movendo){
+			dirsLivres.erase((dir + 2) % 4);
+			if(dirsLivres.empty()){
+				dir = (dir + 2) % 4;
+				dx *= -1;
+				dy *= -1;
+				espera = FPS;
+				movendo = false;
+				return false;
+			}
+		}
+		auto it = dirsLivres.begin();
+		advance(it, rand() % dirsLivres.size());
+		int nd = *it;
+		if(nd == dir)
+			return true;
+		
+		setaDirecao(nd);
+		if(movendo){
+			espera = FPS;
+			movendo = false;
+		}
 	}
 
 	void mover(Mapa &mapa){
@@ -77,7 +111,7 @@ class Mosquito{
 		}
 
 		if(inteiro(x) && inteiro(y)){
-			int i = (float) x / FPS, j = (float) y / FPS;
+			int i = x / FPS, j = y / FPS;
 			if(movendo)
 				mapa.removePos(i - dx, j - dy, MOSQUITO);
 			
@@ -88,6 +122,9 @@ class Mosquito{
 				mover = proximaDirecao0(i, j, mapa);
 				break;
 			case 1:
+				mover = proximaDirecao1(i, j, mapa);
+				break;
+			case 2:
 				mover = proximaDirecao1(i, j, mapa);
 			default:
 				break;
@@ -119,7 +156,7 @@ class Mosquito{
     void desenha(){
 		float X = (float) x / FPS;
 		float Y = (float) y / FPS + sin(frame / 5) * 0.05;
-		int t = T_MOSQUITO + (frame % 10) / 5;
+		int t = T_MOSQUITO + (frame % 10) / 5 + (tipo) * 2;
 		if(espelha)
 			desenhaTexturaEspelhado(t, X, Y, X + 1, Y + 1);
 		else

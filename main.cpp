@@ -6,37 +6,14 @@
 #include <vector>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
 #define MINIAUDIO_IMPLEMENTATION
+#ifdef MINIAUDIO_IMPLEMENTATION
 #include "miniaudio.h"
-#define NUM_AUDIOS 3
-
-using namespace std;
-
-#define playerXinicial 13
-#define playerYinicial 1
-
-enum Estado{
-	menu,
-	gameover,
-	pausado,
-	jogando
-};
-
 typedef struct {
     ma_decoder decoder;
     ma_device device;
 } AudioPlayer;
-
-int mapa[15][15];
-int playerX= -1;
-int playerY= -1;
-int mosquito[6][5]; //colunas - ativo, x, y, deslocamento x, deslocamento y
-int raquete[3]={0,0,0};  //colunas - ativo , x, y
-int pontos=0, vidas=3, potenciaDaRaquete=1, contadorMosquitos=0, mouseX, mouseY;
-int menuItem = 0;
-Estado estado = menu;
-GLuint textureID[40];
-AudioPlayer audioPlayers[NUM_AUDIOS];
 
 void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount) {
     ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
@@ -95,6 +72,38 @@ void cleanupAudios() {
         ma_decoder_uninit(&audioPlayers[i].decoder);
     }
 }
+#else
+typedef int AudioPlayer;
+void initAudio(AudioPlayer* player, const char* filepath){}
+void startAudio(AudioPlayer* player){}
+void stopAudio(AudioPlayer* player){}
+void initializeAudios(){}
+void cleanupAudios(){}
+#endif
+#define NUM_AUDIOS 3
+
+using namespace std;
+
+#define playerXinicial 13
+#define playerYinicial 1
+
+enum Estado{
+	menu,
+	gameover,
+	pausado,
+	jogando
+};
+
+int mapa[15][15];
+int playerX= -1;
+int playerY= -1;
+int mosquito[6][5]; //colunas - ativo, x, y, deslocamento x, deslocamento y
+int raquete[3]={0,0,0};  //colunas - ativo , x, y
+int pontos=0, vidas=3, potenciaDaRaquete=1, contadorMosquitos=0, mouseX, mouseY;
+int menuItem = 0;
+Estado estado = menu;
+GLuint textureID[40];
+AudioPlayer audioPlayers[NUM_AUDIOS];
 
 // Função para carregar a imagem e criar uma textura
 void loadTexture(const char* filename, int n) { 

@@ -28,7 +28,6 @@ class Jogo{
     }
 
     void tecladoEspecial(int key, int x, int y){
-        printf("Setas: %ld\n", setas.size());
         if(!player.vivo && setas.size() == 0)
             player.setaPos(1, 1);
         
@@ -51,7 +50,6 @@ class Jogo{
                     it++;
             }
         }
-        printf("Setas: %ld\n", setas.size());
     }
 
     void comecaMovimento(){

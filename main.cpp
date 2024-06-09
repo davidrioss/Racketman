@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "include/stb_image.h"
 #define NUM_AUDIOS 3
 
 using namespace std;
@@ -69,32 +69,32 @@ void InicializarTexturas () {
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    loadTexture("0.png", 0);
-    loadTexture("1.png", 1);
-    loadTexture("2.png", 2);
-    loadTexture("3.png", 3);
-    loadTexture("4.png", 4);
-    loadTexture("5.png", 5);
-    loadTexture("6.png", 6);
-    loadTexture("7.png", 7);
-    loadTexture("8.png", 8);
-    loadTexture("9.png", 9);
-    loadTexture("menu.jpg", T_MENU);
-    loadTexture("gameover.jpg", T_GAMEOVER);
-    loadTexture("grama.jpg", T_GRAMA);
-    loadTexture("pedra.jpg", T_PEDRA);
-    loadTexture("parede.png", T_PAREDE);
-    loadTexture("jogador.png", T_JOGADOR);
-    loadTexture("mosquito.png", T_MOSQUITO);
-    loadTexture("raquete.png", T_RAQUETE);
-    loadTexture("coracao.png", T_CORACAO);
-    loadTexture("raio.png", T_RAIO);
-    loadTexture("bateria.png", T_BATERIA);
-    loadTexture("pause.png", T_PAUSE);
-    loadTexture("placar.png", T_PLACAR);
-    loadTexture("mosquitinho.png", T_MOSQUITINHO);
-	loadTexture("tenis.png", T_TENIS);
-	loadTexture("raquetebonus.png", T_RAQUETEBONUS);
+    loadTexture("imagens/0.png", 0);
+    loadTexture("imagens/1.png", 1);
+    loadTexture("imagens/2.png", 2);
+    loadTexture("imagens/3.png", 3);
+    loadTexture("imagens/4.png", 4);
+    loadTexture("imagens/5.png", 5);
+    loadTexture("imagens/6.png", 6);
+    loadTexture("imagens/7.png", 7);
+    loadTexture("imagens/8.png", 8);
+    loadTexture("imagens/9.png", 9);
+    loadTexture("imagens/menu.jpg", T_MENU);
+    loadTexture("imagens/gameover.jpg", T_GAMEOVER);
+    loadTexture("imagens/grama.jpg", T_GRAMA);
+    loadTexture("imagens/pedra.jpg", T_PEDRA);
+    loadTexture("imagens/parede.png", T_PAREDE);
+    loadTexture("imagens/jogador.png", T_JOGADOR);
+    loadTexture("imagens/mosquito.png", T_MOSQUITO);
+    loadTexture("imagens/raquete.png", T_RAQUETE);
+    loadTexture("imagens/coracao.png", T_CORACAO);
+    loadTexture("imagens/raio.png", T_RAIO);
+    loadTexture("imagens/bateria.png", T_BATERIA);
+    loadTexture("imagens/pause.png", T_PAUSE);
+    loadTexture("imagens/placar.png", T_PLACAR);
+    loadTexture("imagens/mosquitinho.png", T_MOSQUITINHO);
+	loadTexture("imagens/tenis.png", T_TENIS);
+	loadTexture("imagens/raquetebonus.png", T_RAQUETEBONUS);
 }
 
 void Teclado(unsigned char key, int x, int y)

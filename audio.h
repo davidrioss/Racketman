@@ -3,7 +3,7 @@
 #define NUM_AUDIOS 3
 #ifndef SEMAUDIO
 #define MINIAUDIO_IMPLEMENTATION
-#include "miniaudio.h"
+#include "include/miniaudio.h"
 typedef struct {
     ma_decoder decoder;
     ma_device device;
@@ -57,9 +57,9 @@ void stopAudio(AudioPlayer* player) {
 
 void initializeAudios() {
     // Inicialize os diferentes áudios
-    initAudio(&audioPlayers[0], "menu.mp3");
-    initAudio(&audioPlayers[1], "gameover.mp3");
-    initAudio(&audioPlayers[2], "game.mp3");
+    initAudio(&audioPlayers[0], "audios/menu.mp3");
+    initAudio(&audioPlayers[1], "audios/gameover.mp3");
+    initAudio(&audioPlayers[2], "audios/game.mp3");
 }
 
 void cleanupAudios() {

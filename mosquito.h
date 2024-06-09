@@ -13,7 +13,7 @@ class Mosquito{
 	int tipo;
 	int espera;
 	int frame;
-	int frameCaminhando;
+	bool espelha = false;
 	bool movendo;
 
 	Mosquito(int velocidade, int tipo, Mapa &mapa) : velocidade(velocidade), tipo(tipo){
@@ -37,7 +37,6 @@ class Mosquito{
 		x *= FPS;
 		y *= FPS;
 		movendo = false;
-		frameCaminhando = frame = espera = 0;
 	}
 
 	void mover(Mapa &mapa){
@@ -73,8 +72,12 @@ class Mosquito{
 			mapa.setPos(i + dx, j + dy, MOSQUITO);
 		}
 
+		
+		if(dx > 0)
+			espelha = false;
+		else if(dx < 0)
+			espelha = true;
 		movendo = true;
-		frameCaminhando++;
 		x += velocidades[velocidade] * dx;
 		y += velocidades[velocidade] * dy;
 	}
@@ -91,6 +94,9 @@ class Mosquito{
     void desenha(){
 		float X = (float) x / FPS;
 		float Y = (float) y / FPS;
-		desenhaTextura(T_MOSQUITO, X, Y, X + 1, Y + 1);
+		if(espelha)
+			desenhaTexturaEspelhado(T_MOSQUITO, X, Y, X + 1, Y + 1);
+		else
+			desenhaTextura(T_MOSQUITO, X, Y, X + 1, Y + 1);
     }
 };

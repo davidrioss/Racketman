@@ -415,7 +415,6 @@ void InicializaMatriz(){
 }
 
 void ResetaJogo(){
-	vidas = 3;
 	playerX= playerXinicial;
 	playerY= playerYinicial;
 	contadorMosquitos=0;
@@ -527,6 +526,7 @@ void GerenciaMouse(int button, int state, int x, int y)
         if (state == GLUT_UP) {     
 	        if (x>=238 && x<=466 && y>=510 && y<=565 && (estado==menu || estado==gameover)){
 	         	pontos=0;
+	         	vidas = 3;
 				ResetaJogo();
 			}
 	        if (x>=300 && x<=400 && y>=575 && y<=630 && (estado==menu || estado==gameover))

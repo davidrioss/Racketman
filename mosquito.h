@@ -16,7 +16,7 @@ class Mosquito{
 	bool espelha;
 	bool movendo;
 
-	Mosquito(int velocidade, int tipo, Mapa &mapa) : velocidade(velocidade), tipo(1){
+	Mosquito(int velocidade, int tipo, Mapa &mapa) : velocidade(velocidade), tipo(rand() % 3){
 		do{
 			x = (rand() % (mapa.colunas - 3)) + 2;
 			y = (rand() % (mapa.linhas - 3)) + 2;
@@ -34,10 +34,6 @@ class Mosquito{
 	}
 
 	void setaDirecao(int d){
-		if(d < 0 || d > 3){
-			printf("ERROR\n");
-			exit(1);
-		}
 		dir = d;
 		dx = dirs[dir][0];
 		dy = dirs[dir][1];
@@ -65,7 +61,6 @@ class Mosquito{
 	}
 
 	bool proximaDirecao1(int &i, int &j, Mapa &mapa){
-		printf("proximaDirecao1 %d %d\n", i, j);
 		if(!movendo && !(mapa.getPos(i + dx, j + dy) & (BLOCO | PAREDE | RAQUETE | MOSQUITO)))
 			return true;
 		
@@ -129,13 +124,14 @@ class Mosquito{
 			case 1:
 				mover = proximaDirecao1(i, j, mapa);
 				break;
+			case 2:
+				mover = proximaDirecao1(i, j, mapa);
 			default:
 				break;
 			}
 			
 			if(!mover)
 				return;
-			printf("SET %d %d\n", i + dx, j + dy);
 			mapa.setPos(i + dx, j + dy, MOSQUITO);
 		}
 
@@ -146,7 +142,6 @@ class Mosquito{
 		movendo = true;
 		x += velocidades[velocidade] * dx;
 		y += velocidades[velocidade] * dy;
-		printf("%.3lf %.3lf\n", x / 60.0, y / 60.0);
 	}
 
 	void matar(Mapa &mapa){
@@ -161,7 +156,7 @@ class Mosquito{
     void desenha(){
 		float X = (float) x / FPS;
 		float Y = (float) y / FPS + sin(frame / 5) * 0.05;
-		int t = T_MOSQUITO + (frame % 10) / 5;
+		int t = T_MOSQUITO + (frame % 10) / 5 + (tipo) * 2;
 		if(espelha)
 			desenhaTexturaEspelhado(t, X, Y, X + 1, Y + 1);
 		else

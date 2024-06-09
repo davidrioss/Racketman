@@ -12,10 +12,10 @@ class Mapa{
 	int colunas;
 
 	Mapa(int linhas, int colunas, int paredes) : linhas(linhas), colunas(colunas){
-		grid = std::vector<std::vector<short int>>(linhas, std::vector<short int>(colunas));
+		grid = std::vector<std::vector<short int>>(colunas, std::vector<short int>(linhas));
 
-        for(int i = 0; i < linhas; i++) for(int j = 0; j < colunas; j++){
-            if(i == 0 || i == linhas - 1 || j == 0 || j== colunas - 1 || ( i % 2 == 0 && j % 2 == 0)){
+        for(int i = 0; i < colunas; i++) for(int j = 0; j < linhas; j++){
+            if(i == 0 || i == colunas - 1 || j == 0 || j == linhas - 1 || ( i % 2 == 0 && j % 2 == 0)){
                 grid[i][j] = BLOCO;
             }else if(rand() % 100 < paredes){
                 grid[i][j] = PAREDE;
@@ -58,8 +58,8 @@ class Mapa{
 	}
 
     void desenha(){
-        for(int i = 0; i < linhas; i++){
-            for(int j = 0; j < colunas; j++){
+        for(int i = 0; i < colunas; i++){
+            for(int j = 0; j < linhas; j++){
                 if(grid[i][j] & BLOCO){
                     desenhaTextura(T_PEDRA, i, j, i + 1, j + 1);
                     continue;

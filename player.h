@@ -48,10 +48,11 @@ class Player{
 		return !(inteiro(x) && inteiro(y));
 	}
 
-	void colocaRaquete(Mapa &mapa){
+	void colocaRaquete(Mapa &mapa, bool botao){
 		int i = x / FPS, j = y / FPS;
 		if(!vivo || movendo() || numRaquetes == 0 || mapa.getPos(i, j) & RAQUETE){
-			framesProximo = FPS / 6;
+			if(botao)
+				framesProximo = FPS / 6;
 			return;
 		}
 		
@@ -77,7 +78,7 @@ class Player{
 	bool mover(Mapa &mapa){
 		x += velocidades[velocidade] * dx;
 		y += velocidades[velocidade] * dy;
-		if(framesProximo)
+		if(framesProximo > 0)
 			framesProximo--;
 
 		if(inteiro(x) && inteiro(y)){
@@ -111,7 +112,7 @@ class Player{
 			}
 
 			if(framesProximo > 0){
-				colocaRaquete(mapa);
+				colocaRaquete(mapa, false);
 			}
 		}else{
 			framesAndando++;

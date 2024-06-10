@@ -20,7 +20,7 @@ class Mosquito{
 	int playerVisto = 0;
 	std::vector<std::vector<int>> memoria;
 
-	Mosquito(int velocidade, int tipo, Mapa &mapa) : velocidade(velocidade), tipo(rand() % 3){
+	Mosquito(int velocidade, int tipo, Mapa &mapa) : velocidade(velocidade), tipo(tipo){
 		do{
 			x = (rand() % (mapa.colunas - 3)) + 2;
 			y = (rand() % (mapa.linhas - 3)) + 2;

@@ -20,12 +20,27 @@ class Jogo{
 
     Jogo() : mapa(9, 9, 60){
         srand(time(NULL));
-        int qtdMosquitos=1;
         mosquitos = std::list<Mosquito>();
-        while(qtdMosquitos--){
-            mosquitos.emplace_back(0, 0, mapa);
-        }
+        colocaMosquitos();
     }
+
+    void colocaMosquitos(){
+        int i = minimo(fase, 19);
+        colocaMosquitos(qtdMosquitos[i][0], qtdMosquitos[i][1], qtdMosquitos[i][2]);
+    }
+
+	void colocaMosquitos(int m1, int m2, int m3){
+        mosquitos = std::list<Mosquito>();
+        int v = minimo(fase / 2, VELOCIDADEMAX);
+        while(m1--)
+            mosquitos.emplace_back(v, 0, mapa);
+        v = minimo((fase - 2) / 2, VELOCIDADEMAX);
+        while(m2--)
+            mosquitos.emplace_back(v, 1, mapa);
+        v = minimo((fase - 5) / 2, VELOCIDADEMAX);
+        while(m3--)
+            mosquitos.emplace_back(v, 2, mapa);
+	}
 
     void tecladoEspecial(int key, int x, int y){
         if(!player.vivo && setas.size() == 0)
@@ -76,7 +91,7 @@ class Jogo{
     }
 
     void colocaRaquete(){
-        player.colocaRaquete(mapa);
+        player.colocaRaquete(mapa, true);
     }
 
     void desenhaVidas(){
@@ -148,12 +163,7 @@ class Jogo{
         player.reseta();
         int tamanho = minimo(9 + fase / 3 * 2, 15);
         mapa = Mapa(tamanho, tamanho, maximo(60 - fase, 20));
-        
-        int qtdMosquitos = minimo(fase + 1, 10);
-        mosquitos.clear();
-        while(qtdMosquitos--){
-            mosquitos.emplace_back(minimo(fase / 3, VELOCIDADEMAX), 0, mapa);
-        }
+        colocaMosquitos();
     }
 
     void atualiza(){

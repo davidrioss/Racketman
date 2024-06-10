@@ -131,7 +131,7 @@ class Jogo{
 
         mapa.desenha();
         desenhaVidas();
-        desenhaPontuacao(true, mapa.colunas - 3.3f, mapa.linhas - 1.0f);
+        desenhaPontuacao(true, mapa.colunas - 3.6f, mapa.linhas - 1.0f);
 
         for(auto &raquete : player.raquetes)
             raquete.desenha();

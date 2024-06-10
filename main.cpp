@@ -129,6 +129,15 @@ void Teclado(unsigned char key, int x, int y)
 		jogo.colocaRaquete();
 	}
 
+	if(key == 'w')
+		jogo.tecladoEspecial(GLUT_KEY_UP, 0, 0);
+	if(key == 'a')
+		jogo.tecladoEspecial(GLUT_KEY_LEFT, 0, 0);
+	if(key == 's')
+		jogo.tecladoEspecial(GLUT_KEY_DOWN, 0, 0);
+	if(key == 'd')
+		jogo.tecladoEspecial(GLUT_KEY_RIGHT, 0, 0);
+
 	//botão p para pausar
 	if(key == 'p'){
 		if(tela == PAUSE)
@@ -177,6 +186,17 @@ void Teclado(unsigned char key, int x, int y)
 			resetaJogo();
 		}
 	}
+}
+
+void TecladoSolto(unsigned char key, int x, int y){
+	if(key == 'w')
+		jogo.tecladoEspecialSolto(GLUT_KEY_UP, 0, 0);
+	if(key == 'a')
+		jogo.tecladoEspecialSolto(GLUT_KEY_LEFT, 0, 0);
+	if(key == 's')
+		jogo.tecladoEspecialSolto(GLUT_KEY_DOWN, 0, 0);
+	if(key == 'd')
+		jogo.tecladoEspecialSolto(GLUT_KEY_RIGHT, 0, 0);
 }
 
 void TecladoEspecial(int key, int x, int y){
@@ -348,7 +368,8 @@ main(int argc, char** argv){
 	glutDisplayFunc(DesenhaTela);
 	glutSpecialFunc(TecladoEspecial);
 	glutSpecialUpFunc(TecladoEspecialSolto);
-	glutKeyboardFunc(Teclado); 
+	glutKeyboardFunc(Teclado);
+	glutKeyboardUpFunc(TecladoSolto);
 	glutMouseFunc(GerenciaMouse);
 	glutPassiveMotionFunc(passiveMouseMotion);
 	glutTimerFunc(500, DinamicaDoJogo, 1); //inicio do loop de dinamica do jogo

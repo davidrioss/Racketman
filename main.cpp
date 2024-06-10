@@ -272,7 +272,7 @@ bool MouseNoBotaoX(float x, float y){
 void GerenciaMouse(int button, int state, int x, int y)
 {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_UP){
-        if (tela == MENU || tela == GAMEOVER) {
+        if ((tela == MENU || tela == GAMEOVER) && !info) {
 	        if (MouseEmNovo(x, y)){
 				resetaJogo();
 			}
@@ -324,6 +324,8 @@ void DinamicaDoJogo(int frame)
 }
 
 void DesenhaMosquitinho(){
+	if(info)
+		return;
 	if (MouseEmNovo(mouseX, mouseY))
 		desenhaTextura(T_MOSQUITINHO, 9.90f, 2.85f, 11.10f, 4.05f);
     if (MouseEmSair(mouseX, mouseY))

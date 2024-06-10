@@ -137,7 +137,7 @@ void Teclado(unsigned char key, int x, int y)
 	}
 	
 	//botão espaço para por raquete	
-	if(key == 32){
+	if(key == 32 && tela == JOGO){
 		jogo.colocaRaquete();
 	}
 
@@ -245,10 +245,28 @@ bool MouseEmSair(float x, float y){
 	return 0.42 <= x && x <= 0.57 && 0.82 <= y && y <= 0.90;
 }
 
+void ConverteCoordenadas(float &x, float &y){
+	if(tela == MENU || tela == GAMEOVER){
+		x /= largura;
+		y /= altura;
+	}else if(largura > altura){
+		x = (x - (largura - altura) / 2.0) / altura;
+		y /= altura;
+	}else{
+		x /= largura;
+		y = (y - (altura - largura) / 2.0) / largura;
+	}
+}
+
 bool MouseNoBotaoDoCanto(float x, float y){
-	x /= largura;
-	y /= altura;
-	return 0.93 <= x && x <= 1.00 && 0.00 <= y && y <= 0.07; 
+	ConverteCoordenadas(x, y);
+	float size = 1.0f / (tela == PAUSE ? jogo.mapa.colunas : 15);
+	return 1.00 - size <= x && x <= 1.00 && 0.00 <= y && y <= size; 
+}
+
+bool MouseNoBotaoX(float x, float y){
+	ConverteCoordenadas(x, y);
+	return 0.74 <= x && x <= 0.80 && 0.26 <= y && y <= 0.31 ; 
 }
 
 void GerenciaMouse(int button, int state, int x, int y)
@@ -264,8 +282,11 @@ void GerenciaMouse(int button, int state, int x, int y)
 			}
 		}
 		
-		if (tela != JOGO && MouseNoBotaoDoCanto(x, y)){
-			info = !info;
+		if (tela != JOGO){
+			if (!info && MouseNoBotaoDoCanto(x, y))
+				info = true;
+			else if (info && MouseNoBotaoX(x, y))
+				info = false;
 		}
 	}
 }
@@ -338,7 +359,7 @@ void DesenhaGameover(){
 	desenhaTextura(T_GAMEOVER, 0.0f, 0.0f, 15.0f, 15.0f);
 	DesenhaBotaoDoCanto();
     DesenhaMosquitinho();
-    jogo.desenhaPontuacao(true, 11.7f, 13.5f);
+    jogo.desenhaPontuacao(true, 0.2f, 13.8f);
 }
 
 void DesenhaPausado(){
@@ -357,8 +378,13 @@ void DesenhaPausado(){
 }
 
 void DesenhaInfo(){
-	int t = (tela == PAUSE ? minimo(jogo.mapa.colunas, jogo.mapa.linhas) - 3: 12);
-	desenhaTexturaQuadrado(T_CONTROLES, 1.5f, 1.5f, t);
+	if(tela == PAUSE){
+		float dx = jogo.mapa.colunas / 10.0;
+		float dy = jogo.mapa.linhas / 10.0;
+		desenhaTextura(T_CONTROLES, dx, dy, jogo.mapa.colunas - dx, jogo.mapa.linhas - dy);
+	}else{
+		desenhaTexturaQuadrado(T_CONTROLES, 1.5f, 1.5f, 12.0f);
+	}
 }
 
 void DesenhaTela(){

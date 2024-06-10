@@ -19,8 +19,15 @@ Tela tela = MENU;
 Jogo jogo;
 int mouseX;
 int mouseY;
+int recorde = 0;
+
+void imprimePontuacao(){
+	recorde = maximo(recorde, jogo.pontos);
+	printf("\nPontos : %5d\nRecorde: %5d\n", jogo.pontos, recorde);
+}
 
 void resetaJogo(){
+	imprimePontuacao();
 	jogo = Jogo();
 	jogo.carregaFase(0);
 	tela = JOGO;
@@ -77,7 +84,7 @@ void InicializarTexturas () {
 			p--;
 		if(p == -1){
 			printf("%s faltando '_'\n", s.c_str());
-			exit(0);
+			exit(1);
 		}
 		
 		for(int i = 0; i < n; i++){
@@ -121,8 +128,10 @@ void InicializarTexturas () {
 
 void Teclado(unsigned char key, int x, int y)
 {
-	if (key == 27)
+	if (key == 27){
+		imprimePontuacao();
 		exit(0);
+	}
 	
 	//botão espaço para por raquete	
 	if(key == 32){
@@ -237,8 +246,10 @@ void GerenciaMouse(int button, int state, int x, int y)
         if (state == GLUT_UP && (tela == MENU || tela == GAMEOVER)) {     
 	        if (MouseEmNovo(x, y))
 				resetaJogo();
-	        if (MouseEmSair(x, y))
+	        if (MouseEmSair(x, y)){
+				imprimePontuacao();
 	         	exit(0);
+			}
 		}
 	}
 }

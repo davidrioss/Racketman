@@ -90,9 +90,6 @@ class Mapa{
                 if(grid[i][j] & EXPLOSAO){
                     desenhaTextura(T_RAIO, i, j, i + 1, j + 1);
                 }
-                if(grid[i][j] & VAIEXPLO){
-                    desenhaNumero(8, i + 0.3, j + 0.1, 0.8);
-                }
             }
         }
     }

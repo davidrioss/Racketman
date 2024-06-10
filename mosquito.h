@@ -17,6 +17,7 @@ class Mosquito{
 	int frame;
 	bool espelha;
 	bool movendo;
+	int playerVisto = 0;
 	std::vector<std::vector<int>> memoria;
 
 	Mosquito(int velocidade, int tipo, Mapa &mapa) : velocidade(velocidade), tipo(rand() % 3){
@@ -33,9 +34,21 @@ class Mosquito{
 		movendo = false;
 		espera = 0;
 		espelha = false;
-		frame = rand() % 100;
+		frame = rand() % 100 + 1'000'000;
 		if(this->tipo == 2)
-			memoria = std::vector<std::vector<int>>(mapa.colunas, std::vector<int>(mapa.linhas, -1'000'000));
+			memoria = std::vector<std::vector<int>>(mapa.colunas, std::vector<int>(mapa.linhas));
+	}
+
+	void viuPlayer(int xi, int yi, int xf, int yf, int d){
+		if(tipo < 2)
+			return;
+		playerVisto++;
+		while(xi != xf || yi != yf){
+			memoria[xi][yi] = -playerVisto;
+			xi += dirs[d][0];
+			yi += dirs[d][1];
+		}
+		memoria[xf][yf] = -playerVisto;
 	}
 
 	void setaDirecao(int d){
@@ -67,7 +80,7 @@ class Mosquito{
 
 	bool proximaDirecao1(int &i, int &j, Mapa &mapa){
 		std::set<int> dirsLivres;
-		bool livreDeExplosao;
+		bool livreDeExplosao = false;
 		for(int k = 0; k < 4; k++){
 			auto a = mapa.getPos(i + dirs[k][0], j + dirs[k][1]);
 			if(!(a & (BLOCO | PAREDE | RAQUETE | MOSQUITO))){
@@ -121,12 +134,12 @@ class Mosquito{
 
 	bool proximaDirecao2(int &i, int &j, Mapa &mapa){
 		std::map<int, int> dirsLivres;
-		bool livreDeExplosao;
+		bool livreDeExplosao = false;
 		for(int k = 0; k < 4; k++){
 			int x = i + dirs[k][0], y = j + dirs[k][1];
 			auto a = mapa.getPos(x, y);
 			if(!(a & (BLOCO | PAREDE | RAQUETE | MOSQUITO))){
-				dirsLivres[k] = frame - memoria[x][y];
+				dirsLivres[k] = (memoria[x][y] < 0? memoria[x][y]: frame - memoria[x][y]);
 				if(!(a & VAIEXPLO))
 					livreDeExplosao = true;
 			}
@@ -137,13 +150,33 @@ class Mosquito{
 			return false;
 		}
 
+		int mi = INT32_MAX, dirmi;
 		if(livreDeExplosao){
 			auto it = dirsLivres.begin();
 			while(it != dirsLivres.end()){
-				if(mapa.getPos(i + dirs[it->first][0], j + dirs[it->first][1]) & VAIEXPLO)
+				if(mapa.getPos(i + dirs[it->first][0], j + dirs[it->first][1]) & VAIEXPLO){
 					it = dirsLivres.erase(it);
-				else
+				}else{
+					if(it->second < mi){
+						mi = it->second;
+						dirmi = it->first;
+					}
 					it++;
+				}
+			}
+		}
+
+		if(mi < 0){
+			setaDirecao(dirmi);
+			return true;
+		}
+
+		if(movendo){
+			dirsLivres.erase((dir + 2) % 4);
+			if(dirsLivres.empty()){
+				setaDirecao((dir + 2) % 4);
+				movendo = false;
+				return true;
 			}
 		}
 

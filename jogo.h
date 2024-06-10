@@ -181,13 +181,43 @@ class Jogo{
         }
 
         comecaMovimento();
-        player.mover(mapa);
+        if(player.mover(mapa))
+            proximaFase();
         // Colisão com a explosão
         auto a = mapa.getPosMov(player.x, player.y);
         if(a & EXPLOSAO)
             morreu();
-        else if(a & PORTA)
-            proximaFase();
+
+        int x = player.x / FPS, y = player.y / FPS;
+        if(!inteiro(player.x)){
+            if(x % 2 == 0)
+                x++;
+        }else if(!inteiro(player.y)){
+            if(y % 2 == 0)
+                y++;
+        }
+
+        if(player.vivo){
+            for(int k = 0; k < 4; k++){
+                for(int i = x + dirs[k][0], j = y + dirs[k][1]; true; i += dirs[k][0], j += dirs[k][1]){
+                    auto a = mapa.getPos(i, j);
+                    if(a & (BLOCO | PAREDE | RAQUETE))
+                        break;
+                    if(!(a & MOSQUITO))
+                        continue;
+                    
+                    for(auto &mosquito : mosquitos){
+                        int dx = mosquito.x - i * FPS;
+                        int dy = mosquito.y - j * FPS;
+                        if((dx > -FPS && dx < FPS) && (dy > -FPS && dy < FPS)){
+                            mosquito.viuPlayer(x, y, i, j, k);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
 
         // Movimenta mosquitos
         auto mosquito = mosquitos.begin();

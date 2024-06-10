@@ -74,7 +74,7 @@ class Player{
 		dy = ndy;
 	}
 
-	void mover(Mapa &mapa){
+	bool mover(Mapa &mapa){
 		x += velocidades[velocidade] * dx;
 		y += velocidades[velocidade] * dy;
 		if(framesProximo)
@@ -106,11 +106,18 @@ class Player{
 					velocidade++;
 				mapa.removePos(i, j, BOTA);
 			}
+			if(a & PORTA){
+            	return true;
+			}
 
 			if(framesProximo > 0){
 				colocaRaquete(mapa);
 			}
+		}else{
+			framesAndando++;
 		}
+
+		return false;
 	}
 
 	void desenha(){
@@ -118,7 +125,7 @@ class Player{
 			return;
 		float X = (float) x / FPS;
 		float Y = (float) y / FPS;
-		int t = T_JOGADOR + (framesAndando++ % 15) / 5;
+		int t = T_JOGADOR + (framesAndando % 15) / 5;
 		if(espelha)
 			desenhaTexturaEspelhado(t, X, Y, X + 1, Y + 1);
 		else

@@ -104,7 +104,7 @@ class Player{
 				mapa.removePos(i, j, RAQPODER);
 			}
 			if(a & RAQBONUS){
-				if(potenciaDaRaquete < RAQUETESMAX)
+				if(numRaquetes + raquetes.size() < RAQUETESMAX)
 					numRaquetes++;
 				mapa.removePos(i, j, RAQBONUS);
 			}

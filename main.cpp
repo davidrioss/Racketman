@@ -156,18 +156,15 @@ void Teclado(unsigned char key, int x, int y)
 	}
 
 	if(key == '1'){
-		if(jogo.player.numRaquetes < RAQUETESMAX)
-			jogo.player.numRaquetes++;
+		jogo.mapa.setPos(1, 1, RAQBONUS);
 	}
 
 	if(key == '2'){
-		if(jogo.player.potenciaDaRaquete < POTENCIAMAX)
-			jogo.player.potenciaDaRaquete++;
+		jogo.mapa.setPos(1, 1, RAQPODER);
 	}
 
 	if(key == '3'){
-		if(!jogo.player.movendo() && jogo.player.velocidade < VELOCIDADEMAX - 1)
-			jogo.player.velocidade++;
+		jogo.mapa.setPos(1, 1, BOTA);
 	}
 
 	if(key == '4'){
@@ -177,6 +174,10 @@ void Teclado(unsigned char key, int x, int y)
 			tela = JOGO;
 			jogo.setas.clear();
 		}
+	}
+
+	if(key == '5'){
+		jogo.mapa.setPos(1, 1, VIDA);
 	}
 #endif
 

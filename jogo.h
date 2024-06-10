@@ -240,7 +240,7 @@ class Jogo{
             
             // Colisão com a explosão
             if(mapa.getPosMov(mosquito->x, mosquito->y) & EXPLOSAO){
-                pontos += mosquito->velocidade + 1;
+                pontos += mosquito->pontos();
                 mosquito->matar(mapa);
                 mosquito = mosquitos.erase(mosquito);
             }else{

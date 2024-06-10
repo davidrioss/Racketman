@@ -39,6 +39,10 @@ class Mosquito{
 			memoria = std::vector<std::vector<int>>(mapa.colunas, std::vector<int>(mapa.linhas));
 	}
 
+	int pontos(){
+		return (velocidade + 1) * (1 << (2 * tipo));
+	}
+
 	void viuPlayer(int xi, int yi, int xf, int yf, int d){
 		if(tipo < 2)
 			return;
@@ -79,6 +83,8 @@ class Mosquito{
 	}
 
 	bool proximaDirecao1(int &i, int &j, Mapa &mapa){
+		if(!movendo && !(mapa.getPos(i + dx, j + dy) & (BLOCO | PAREDE | RAQUETE | MOSQUITO | VAIEXPLO)))
+			return true;
 		std::set<int> dirsLivres;
 		bool livreDeExplosao = false;
 		for(int k = 0; k < 4; k++){
@@ -91,6 +97,7 @@ class Mosquito{
 		}
 		
 		if(dirsLivres.empty() || (!livreDeExplosao && !(mapa.getPos(i, j) & VAIEXPLO))){
+			setaDirecao(rand() % 4);
 			if(movendo){
 				movendo = false;
 				espera = FPS;
@@ -129,7 +136,9 @@ class Mosquito{
 		if(movendo){
 			espera = FPS;
 			movendo = false;
+			return false;
 		}
+		return true;
 	}
 
 	bool proximaDirecao2(int &i, int &j, Mapa &mapa){
@@ -164,12 +173,14 @@ class Mosquito{
 					it++;
 				}
 			}
+
+			
+			if(mi < 0){
+				setaDirecao(dirmi);
+				return true;
+			}
 		}
 
-		if(mi < 0){
-			setaDirecao(dirmi);
-			return true;
-		}
 
 		if(movendo){
 			dirsLivres.erase((dir + 2) % 4);

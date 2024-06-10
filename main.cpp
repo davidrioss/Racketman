@@ -137,6 +137,7 @@ void Teclado(unsigned char key, int x, int y)
 			tela = PAUSE;
 	}
 
+#ifdef DEBUG
 	if(key == 'n'){
 		jogo.carregaFase();
 	}
@@ -168,6 +169,7 @@ void Teclado(unsigned char key, int x, int y)
 			jogo.setas.clear();
 		}
 	}
+#endif
 
 	//botão enter para começar
 	if(key == 13){

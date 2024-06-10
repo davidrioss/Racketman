@@ -11,7 +11,11 @@ class Raquete{
     int raio;
     int frames;
 
-    Raquete(int x, int y, int raio, int frames) : x(x), y(y), raio(raio), frames(frames){}
+    Raquete(int x, int y, int raio, int frames, Mapa &mapa) : x(x), y(y), raio(raio), frames(frames){
+        atualizaRaio(mapa, [&mapa](int x, int y){
+            mapa.setPos(x, y, VAIEXPLO);
+        });
+    }
 
     void atualizaRaio(Mapa &mapa, std::function<void(int, int)> f){
         for(int k = 0; k < 4; k++){
@@ -27,11 +31,12 @@ class Raquete{
     }
 
     bool atualiza(Mapa &mapa){
+        // Limpa explosão
         if(--frames == -FPS / 4){
             mapa.grid[x][y] = 0;
             atualizaRaio(mapa, [&mapa](int x, int y){
                 if(mapa.getPos(x, y) & PAREDE)
-                    mapa.removePos(x, y, EXPLOSAO | PAREDE);
+                    mapa.removePos(x, y, EXPLOSAO | PAREDE | VAIEXPLO);
                 else
                     mapa.grid[x][y] = 0;
             });

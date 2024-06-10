@@ -2,8 +2,10 @@
 
 #include "mapa.h"
 
+#include <map>
 #include <random>
 #include <set>
+#include <vector>
 
 class Mosquito{
 	public:
@@ -15,6 +17,7 @@ class Mosquito{
 	int frame;
 	bool espelha;
 	bool movendo;
+	std::vector<std::vector<int>> memoria;
 
 	Mosquito(int velocidade, int tipo, Mapa &mapa) : velocidade(velocidade), tipo(rand() % 3){
 		do{
@@ -30,7 +33,9 @@ class Mosquito{
 		movendo = false;
 		espera = 0;
 		espelha = false;
-		frame = rand();
+		frame = rand() % 100;
+		if(this->tipo == 2)
+			memoria = std::vector<std::vector<int>>(mapa.colunas, std::vector<int>(mapa.linhas, -1'000'000));
 	}
 
 	void setaDirecao(int d){
@@ -61,17 +66,19 @@ class Mosquito{
 	}
 
 	bool proximaDirecao1(int &i, int &j, Mapa &mapa){
-		if(!movendo && !(mapa.getPos(i + dx, j + dy) & (BLOCO | PAREDE | RAQUETE | MOSQUITO)))
-			return true;
-		
 		std::set<int> dirsLivres;
-		for(int k = 0; k < 4; k++)
-			if(!(mapa.getPos(i + dirs[k][0], j + dirs[k][1]) & (BLOCO | PAREDE | RAQUETE | MOSQUITO)))
+		bool livreDeExplosao;
+		for(int k = 0; k < 4; k++){
+			auto a = mapa.getPos(i + dirs[k][0], j + dirs[k][1]);
+			if(!(a & (BLOCO | PAREDE | RAQUETE | MOSQUITO))){
 				dirsLivres.insert(k);
+				if(!(a & VAIEXPLO))
+					livreDeExplosao = true;
+			}
+		}
 		
-		if(dirsLivres.empty()){
+		if(dirsLivres.empty() || (!livreDeExplosao && !(mapa.getPos(i, j) & VAIEXPLO))){
 			if(movendo){
-				setaDirecao(rand() % 4);
 				movendo = false;
 				espera = FPS;
 			}
@@ -79,17 +86,26 @@ class Mosquito{
 			return false;
 		}
 
+		if(livreDeExplosao){
+			auto it = dirsLivres.begin();
+			while(it != dirsLivres.end()){
+				if(mapa.getPos(i + dirs[*it][0], j + dirs[*it][1]) & VAIEXPLO)
+					it = dirsLivres.erase(it);
+				else
+					it++;
+			}
+		}
+
 		if(movendo){
 			dirsLivres.erase((dir + 2) % 4);
 			if(dirsLivres.empty()){
-				dir = (dir + 2) % 4;
-				dx *= -1;
-				dy *= -1;
+				setaDirecao((dir + 2) % 4);
 				espera = FPS;
 				movendo = false;
 				return false;
 			}
 		}
+
 		auto it = dirsLivres.begin();
 		advance(it, rand() % dirsLivres.size());
 		int nd = *it;
@@ -103,6 +119,50 @@ class Mosquito{
 		}
 	}
 
+	bool proximaDirecao2(int &i, int &j, Mapa &mapa){
+		std::map<int, int> dirsLivres;
+		bool livreDeExplosao;
+		for(int k = 0; k < 4; k++){
+			int x = i + dirs[k][0], y = j + dirs[k][1];
+			auto a = mapa.getPos(x, y);
+			if(!(a & (BLOCO | PAREDE | RAQUETE | MOSQUITO))){
+				dirsLivres[k] = frame - memoria[x][y];
+				if(!(a & VAIEXPLO))
+					livreDeExplosao = true;
+			}
+		}
+		
+		if(dirsLivres.empty() || (!livreDeExplosao && !(mapa.getPos(i, j) & VAIEXPLO))){
+			movendo = false;
+			return false;
+		}
+
+		if(livreDeExplosao){
+			auto it = dirsLivres.begin();
+			while(it != dirsLivres.end()){
+				if(mapa.getPos(i + dirs[it->first][0], j + dirs[it->first][1]) & VAIEXPLO)
+					it = dirsLivres.erase(it);
+				else
+					it++;
+			}
+		}
+
+		int total = 0;
+		for(auto &k : dirsLivres){
+			total += k.second;
+		}
+		total = rand() % total;
+
+		for(auto &k : dirsLivres){
+			total -= k.second;
+			if(total < 0){
+				setaDirecao(k.first);
+				return true;
+			}
+		}
+		return false;
+	}
+
 	void mover(Mapa &mapa){
 		frame++;
 		if(espera > 0){
@@ -112,6 +172,8 @@ class Mosquito{
 
 		if(inteiro(x) && inteiro(y)){
 			int i = x / FPS, j = y / FPS;
+			if(tipo == 2)
+				memoria[i][j] = frame;
 			if(movendo)
 				mapa.removePos(i - dx, j - dy, MOSQUITO);
 			
@@ -125,13 +187,14 @@ class Mosquito{
 				mover = proximaDirecao1(i, j, mapa);
 				break;
 			case 2:
-				mover = proximaDirecao1(i, j, mapa);
+				mover = proximaDirecao2(i, j, mapa);
 			default:
 				break;
 			}
 			
-			if(!mover)
+			if(!mover){
 				return;
+			}
 			mapa.setPos(i + dx, j + dy, MOSQUITO);
 		}
 

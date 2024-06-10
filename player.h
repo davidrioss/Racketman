@@ -56,7 +56,7 @@ class Player{
 		}
 		
 		mapa.setPos(i, j, RAQUETE);
-		raquetes.emplace_back(i, j, potenciaDaRaquete, 3 * FPS);
+		raquetes.emplace_back(i, j, potenciaDaRaquete, 3 * FPS, mapa);
 		numRaquetes--;
 		framesProximo = 0;
 	}

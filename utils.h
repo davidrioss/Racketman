@@ -31,7 +31,8 @@ enum Entidades{
 	RAQPODER = 1 << 6,
 	RAQBONUS = 1 << 7,
 	BOTA     = 1 << 8,
-	VIDA     = 1 << 9
+	VIDA     = 1 << 9,
+	VAIEXPLO = 1 << 10
 };
 
 enum Texturas{

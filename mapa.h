@@ -7,7 +7,7 @@
 
 class Mapa{
 	public:
-	std::vector<std::vector<short int>> grid;
+	std::vector<std::vector<short int>> grid;   // Grid com bitmask dos itens que ocupam esse lugar
 	int linhas;
 	int colunas;
 
@@ -89,6 +89,9 @@ class Mapa{
                 }
                 if(grid[i][j] & EXPLOSAO){
                     desenhaTextura(T_RAIO, i, j, i + 1, j + 1);
+                }
+                if(grid[i][j] & VAIEXPLO){
+                    desenhaNumero(8, i + 0.3, j + 0.1, 0.8);
                 }
             }
         }

@@ -159,12 +159,24 @@ class Jogo{
     void atualiza(){
         // Atualiza as raquetes
         auto it = player.raquetes.begin();
+        bool removido = false;
         while(it != player.raquetes.end()){
             if(it->atualiza(mapa)){
                 it = player.raquetes.erase(it);
+                removido = true;
                 player.numRaquetes++;
             }else{
                 it++;
+            }
+        }
+
+        if(removido){
+            for(auto &raquete : player.raquetes){
+                if(raquete.frames > 0){
+                    raquete.atualizaRaio(mapa, [&](int x, int y){
+                        mapa.setPos(x, y, VAIEXPLO);
+                    });
+                }
             }
         }
 

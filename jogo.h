@@ -173,15 +173,29 @@ class Jogo{
 
     void atualiza(){
         // Atualiza as raquetes
-        auto it = player.raquetes.begin();
         bool removido = false;
+        auto it = player.raquetes.begin();
+        bool cadeia = false;
         while(it != player.raquetes.end()){
-            if(it->atualiza(mapa)){
+            if(it->atualiza(mapa)){ // Terminou a explosão
                 it = player.raquetes.erase(it);
                 removido = true;
                 player.numRaquetes++;
-            }else{
-                it++;
+                continue;
+            }
+            if(it->frames == 0) // Começou uma explosao
+                cadeia = true;
+            it++;
+        }
+
+        while(cadeia){ // Sincroniza o inicio de todas as bombas em cadeia
+            cadeia = false;
+            for(auto &raquete : player.raquetes){
+                if(raquete.frames > 0 && (mapa.getPos(raquete.x, raquete.y) & EXPLOSAO)){
+                    raquete.frames = 1;
+                    raquete.atualiza(mapa);
+                    cadeia = true;
+                }
             }
         }
 

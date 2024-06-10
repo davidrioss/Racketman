@@ -35,7 +35,11 @@ class Raquete{
         if(--frames == -FPS / 4){
             mapa.grid[x][y] = 0;
             atualizaRaio(mapa, [&mapa](int x, int y){
-                if(mapa.getPos(x, y) & PAREDE)
+                auto a = mapa.getPos(x, y);
+                if(!(a & EXPLOSAO)){
+                    return;
+                }
+                if(a & PAREDE)
                     mapa.removePos(x, y, EXPLOSAO | PAREDE | VAIEXPLO);
                 else
                     mapa.grid[x][y] = 0;
@@ -43,11 +47,8 @@ class Raquete{
             return true;
         }
 
-        if(frames > 0){
-            if(!(mapa.getPos(x, y) & EXPLOSAO))
-                return false;
-            frames = 0;
-        }
+        if(frames > 0)
+            return false;
         
         // Explosão
         mapa.setPos(x, y, EXPLOSAO);

@@ -187,11 +187,16 @@ void Teclado(unsigned char key, int x, int y)
 		if(tela == GAMEOVER){
 			tela = JOGO;
 			jogo.setas.clear();
+			jogo.ajustaEscala();
 		}
 	}
 
 	if(key == '5'){
 		jogo.mapa.setPos(1, 1, VIDA);
+	}
+
+	if(key == '6'){
+		jogo.mapa.setPos(3, 1, VIDA);
 	}
 #endif
 

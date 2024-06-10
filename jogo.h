@@ -36,9 +36,13 @@ class Jogo{
             mosquitos.emplace_back(v, 2, mapa);
 	}
 
-    void tecladoEspecial(int key, int x, int y){
-        if(!player.vivo && setas.size() == 0)
+    void revivePlayer(){
+        if(!player.vivo && setas.size() == 0 && player.framesAnimacao == 0)
             player.setaPos(1, 1);
+    }
+
+    void tecladoEspecial(int key, int x, int y){
+        revivePlayer();
         
         if(key == GLUT_KEY_RIGHT || key == GLUT_KEY_LEFT || key == GLUT_KEY_UP || key == GLUT_KEY_DOWN){
             for(auto &k : setas)
@@ -148,6 +152,7 @@ class Jogo{
             return;
         
         player.vivo = false;
+        player.framesAnimacao = FPS - 1;
         player.vidas--;
     }
 

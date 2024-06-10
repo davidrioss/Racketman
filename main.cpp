@@ -70,6 +70,22 @@ void InicializarTexturas () {
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	auto carregaLista = [](string s, int t, int n){
+		int p = s.size() - 1;
+		while(p != -1 && s[p] != '_')
+			p--;
+		if(p == -1){
+			printf("%s faltando '_'\n", s.c_str());
+			exit(0);
+		}
+		
+		for(int i = 0; i < n; i++){
+			s[p] = '1' + i;
+			loadTexture(s.c_str(), t + i);
+		}
+	};
+
     loadTexture("imagens/0.png", 0);
     loadTexture("imagens/1.png", 1);
     loadTexture("imagens/2.png", 2);
@@ -85,15 +101,10 @@ void InicializarTexturas () {
     loadTexture("imagens/grama.jpg", T_GRAMA);
     loadTexture("imagens/pedra.jpg", T_PEDRA);
     loadTexture("imagens/parede.png", T_PAREDE);
-    loadTexture("imagens/jogador1.png", T_JOGADOR);
-    loadTexture("imagens/jogador2.png", T_JOGADOR + 1);
-    loadTexture("imagens/jogador3.png", T_JOGADOR + 2);
-    loadTexture("imagens/mosquito01.png", T_MOSQUITO);
-    loadTexture("imagens/mosquito02.png", T_MOSQUITO + 1);
-    loadTexture("imagens/mosquito11.png", T_MOSQUITO + 2);
-    loadTexture("imagens/mosquito12.png", T_MOSQUITO + 3);
-    loadTexture("imagens/mosquito21.png", T_MOSQUITO + 4);
-    loadTexture("imagens/mosquito22.png", T_MOSQUITO + 5);
+	carregaLista("imagens/jogador_.png", T_JOGADOR, 3);
+	carregaLista("imagens/mosquito0_.png", T_MOSQUITO  , 2);
+	carregaLista("imagens/mosquito1_.png", T_MOSQUITO+2, 2);
+	carregaLista("imagens/mosquito2_.png", T_MOSQUITO+4, 2);
     loadTexture("imagens/raquete.png", T_RAQUETE);
     loadTexture("imagens/coracao.png", T_CORACAO);
     loadTexture("imagens/raio.png", T_RAIO);
@@ -104,6 +115,7 @@ void InicializarTexturas () {
 	loadTexture("imagens/tenis.png", T_TENIS);
 	loadTexture("imagens/raquetebonus.png", T_RAQUETEBONUS);
 	loadTexture("imagens/porta.png", T_PORTA);
+	carregaLista("imagens/jogadorMorrendo_.png", T_JOGADORMORRENDO, 3);
 }
 
 void Teclado(unsigned char key, int x, int y)
@@ -220,7 +232,7 @@ void DinamicaDoJogo(int frame)
 	auto tempoInicio = std::chrono::system_clock::now();
 	if(tela == JOGO){
 		jogo.atualiza();
-		if(jogo.player.vidas == 0){
+		if(jogo.player.vidas == 0 && jogo.player.framesAnimacao == 0){
 			tela = GAMEOVER;
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();

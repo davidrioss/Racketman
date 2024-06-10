@@ -74,7 +74,8 @@ enum Texturas{
 	T_MOSQUITINHO,
 	T_TENIS,
 	T_RAQUETEBONUS,
-	T_PORTA
+	T_PORTA,
+	T_JOGADORMORRENDO
 };
 
 bool inteiro(int a){

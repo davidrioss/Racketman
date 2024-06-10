@@ -1,10 +1,10 @@
 #include "jogo.h"
 
+#include <chrono>
 #include <stdio.h>
 #include <stdlib.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "include/stb_image.h"
-#define NUM_AUDIOS 3
 
 using namespace std;
 
@@ -16,12 +16,13 @@ enum Tela{
 };
 
 Tela tela = MENU;
-Jogo jogo = Jogo();
+Jogo jogo;
 int mouseX;
 int mouseY;
 
 void resetaJogo(){
 	jogo = Jogo();
+	jogo.carregaFase(0);
 	tela = JOGO;
 }
 
@@ -124,12 +125,11 @@ void Teclado(unsigned char key, int x, int y)
 	}
 
 	if(key == 'n'){
-		jogo.proximaFase();
+		jogo.carregaFase();
 	}
 
 	if(key == 'r'){
-		jogo.fase--;
-		jogo.proximaFase();
+		jogo.carregaFase(jogo.fase);
 	}
 
 	if(key == '1'){
@@ -217,15 +217,26 @@ void passiveMouseMotion(int x, int y) {
 // Função callback chamada pela GLUT a cada intervalo de tempo
 void DinamicaDoJogo(int frame)
 {
+	auto tempoInicio = std::chrono::system_clock::now();
 	if(tela == JOGO){
 		jogo.atualiza();
-		if(jogo.player.vidas == 0)
+		if(jogo.player.vidas == 0){
 			tela = GAMEOVER;
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+			gluOrtho2D(0.0f, 15.0f, 0.0f, 15.0f);
+		}
 	}
 
-	//chamada recursiva para gerar dinamica do jogo  
 	glutPostRedisplay();
-	glutTimerFunc(1000.0 / FPS, DinamicaDoJogo, frame + 1); 
+	auto time = chrono::duration_cast<chrono::microseconds>(std::chrono::system_clock::now() - tempoInicio).count();
+	auto espera = 1000.0 / FPS - time / 1000.0;
+	if(espera <= 0){
+		printf("Atrasado %.3lfms, tempo total %.3lfms\n", -espera, time / 1000.0);
+		espera = 0.0;
+	}
+	//chamada recursiva para gerar dinamica do jogo  
+	glutTimerFunc(espera, DinamicaDoJogo, frame + 1); 
 }
 
 void DesenhaMosquitinho(){
@@ -240,9 +251,6 @@ void DesenhaMenu(){
 	stopAudio(&audioPlayers[2]);
 	startAudio(&audioPlayers[0]);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	gluOrtho2D(0.0f, 15.0f, 0.0f, 15.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	desenhaTextura(T_MENU, 0.0f, 0.0f, 15.0f, 15.0f);
     DesenhaMosquitinho();
@@ -253,9 +261,6 @@ void DesenhaGameover(){
 	stopAudio(&audioPlayers[2]);
 	startAudio(&audioPlayers[1]);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	gluOrtho2D(0.0f, 15.0f, 0.0f, 15.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	desenhaTextura(T_GAMEOVER, 0.0f, 0.0f, 15.0f, 15.0f);
     DesenhaMosquitinho();
@@ -306,9 +311,17 @@ void AlteraTamanhoJanela(GLsizei w, GLsizei h)
 
 	// Especifica as dimensões da Viewport
 	glViewport(0, 0, largura, altura);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	if(tela == JOGO){
+		jogo.ajustaEscala();
+	}else{
+		gluOrtho2D(0.0f, 15.0f, 0.0f, 15.0f);
+	}
 }
 
 main(int argc, char** argv){
+	srand(time(NULL));
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);  
 	glutInitWindowPosition(5,5);     
@@ -323,7 +336,7 @@ main(int argc, char** argv){
 	glutKeyboardFunc(Teclado); 
 	glutMouseFunc(GerenciaMouse);
 	glutPassiveMotionFunc(passiveMouseMotion);
-	glutTimerFunc(500, DinamicaDoJogo,1); //inicio do loop de dinamica do jogo
+	glutTimerFunc(500, DinamicaDoJogo, 1); //inicio do loop de dinamica do jogo
 	
 	glutMainLoop();
 	cleanupAudios();

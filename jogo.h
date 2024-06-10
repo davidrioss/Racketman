@@ -12,17 +12,11 @@
 class Jogo{
     public:
     int pontos = 0;
-    int fase = 0;
+    int fase = -1;
     std::list<Mosquito> mosquitos;
     Mapa mapa;
     Player player;
     std::list<int> setas;
-
-    Jogo() : mapa(9, 9, 60){
-        srand(time(NULL));
-        mosquitos = std::list<Mosquito>();
-        colocaMosquitos();
-    }
 
     void colocaMosquitos(){
         int i = minimo(fase, 19);
@@ -113,6 +107,8 @@ class Jogo{
     void ajustaEscala(){
         float razaoLargura = (float) largura / mapa.colunas;
         float razaoAltura = (float) altura / mapa.linhas;
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
         if(razaoLargura <= razaoAltura){
             double sobra = (razaoAltura / razaoLargura - 1) * mapa.linhas / 2;
             gluOrtho2D(0.0, (double) mapa.colunas, -sobra, mapa.linhas + sobra);
@@ -127,9 +123,6 @@ class Jogo{
 		stopAudio(&audioPlayers[1]);
 		startAudio(&audioPlayers[2]);
 
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        ajustaEscala();
         glClear(GL_COLOR_BUFFER_BIT);
 
         mapa.desenha();
@@ -158,11 +151,16 @@ class Jogo{
         player.vidas--;
     }
 
-    void proximaFase(){
-        fase++;
+    void carregaFase(int f = -1){
+        if(f == -1)
+            fase++;
+        else
+            fase = f;
+        
         player.reseta();
         int tamanho = minimo(9 + fase / 3 * 2, 15);
         mapa = Mapa(tamanho, tamanho, maximo(60 - fase, 20));
+        ajustaEscala();
         colocaMosquitos();
     }
 
@@ -192,7 +190,7 @@ class Jogo{
 
         comecaMovimento();
         if(player.mover(mapa))
-            proximaFase();
+            carregaFase();
         // Colisão com a explosão
         auto a = mapa.getPosMov(player.x, player.y);
         if(a & EXPLOSAO)

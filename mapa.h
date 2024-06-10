@@ -11,6 +11,11 @@ class Mapa{
 	int linhas;
 	int colunas;
 
+    Mapa(){
+        linhas = 0;
+        colunas = 0;
+    }
+
 	Mapa(int linhas, int colunas, int paredes) : linhas(linhas), colunas(colunas){
 		grid = std::vector<std::vector<short int>>(colunas, std::vector<short int>(linhas));
 

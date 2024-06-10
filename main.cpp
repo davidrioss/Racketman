@@ -127,6 +127,11 @@ void Teclado(unsigned char key, int x, int y)
 		jogo.proximaFase();
 	}
 
+	if(key == 'r'){
+		jogo.fase--;
+		jogo.proximaFase();
+	}
+
 	if(key == '1'){
 		if(jogo.player.numRaquetes < RAQUETESMAX)
 			jogo.player.numRaquetes++;
@@ -140,6 +145,15 @@ void Teclado(unsigned char key, int x, int y)
 	if(key == '3'){
 		if(!jogo.player.movendo() && jogo.player.velocidade < VELOCIDADEMAX - 1)
 			jogo.player.velocidade++;
+	}
+
+	if(key == '4'){
+		if(jogo.player.vidas < 5)
+			jogo.player.vidas++;
+		if(tela == GAMEOVER){
+			tela = JOGO;
+			jogo.setas.clear();
+		}
 	}
 
 	//botão enter para começar

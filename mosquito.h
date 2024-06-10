@@ -18,6 +18,8 @@ class Mosquito{
 	bool espelha;
 	bool movendo;
 	int playerVisto = 0;
+	bool vivo = true;
+	int framesAnimacao = 0;
 	std::vector<std::vector<int>> memoria;
 
 	Mosquito(int velocidade, int tipo, Mapa &mapa) : velocidade(velocidade), tipo(tipo){
@@ -193,6 +195,8 @@ class Mosquito{
 
 		int total = 0;
 		for(auto &k : dirsLivres){
+			if(k.second < 0)
+				k.second = 1;
 			total += k.second;
 		}
 		total = rand() % total;
@@ -207,11 +211,15 @@ class Mosquito{
 		return false;
 	}
 
-	void mover(Mapa &mapa){
+	bool mover(Mapa &mapa){
+		if(!vivo){
+			return --framesAnimacao == 0;
+		}
+
 		frame++;
 		if(espera > 0){
 			espera -= velocidades[velocidade];
-			return;
+			return false;
 		}
 
 		if(inteiro(x) && inteiro(y)){
@@ -237,7 +245,7 @@ class Mosquito{
 			}
 			
 			if(!mover){
-				return;
+				return false;
 			}
 			mapa.setPos(i + dx, j + dy, MOSQUITO);
 		}
@@ -249,6 +257,7 @@ class Mosquito{
 		movendo = true;
 		x += velocidades[velocidade] * dx;
 		y += velocidades[velocidade] * dy;
+		return false;
 	}
 
 	void matar(Mapa &mapa){
@@ -264,9 +273,10 @@ class Mosquito{
 		float X = (float) x / FPS;
 		float Y = (float) y / FPS + sin(frame / 5) * 0.05;
 		int t = T_MOSQUITO + (frame % 10) / 5 + (tipo) * 2;
-		if(espelha)
-			desenhaTexturaEspelhado(t, X, Y, X + 1, Y + 1);
-		else
-			desenhaTextura(t, X, Y, X + 1, Y + 1);
+		desenhaTextura(t, X, Y, X + 1, Y + 1, espelha);
+		if(!vivo && framesAnimacao < 9){
+			t = T_MOSQUITOMORRENDO + (framesAnimacao - 1) / 2;
+			desenhaTextura(t, X, Y, X + 1, Y + 1, espelha);
+		}
     }
 };

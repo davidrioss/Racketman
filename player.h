@@ -134,14 +134,10 @@ class Player{
 		if(!vivo){
 			if(framesAnimacao == 0)
 				return;
-			int q = (FPS / 6);
 			t = T_JOGADORMORRENDO + maximo(framesAnimacao / (FPS / 6) - 4, 0);
 		}else{
 			t = T_JOGADOR + (framesAnimacao % 15) / 5;
 		}
-		if(espelha)
-			desenhaTexturaEspelhado(t, X, Y, X + 1, Y + 1);
-		else
-			desenhaTextura(t, X, Y, X + 1, Y + 1);
+		desenhaTextura(t, X, Y, X + 1, Y + 1, espelha);
 	}
 };

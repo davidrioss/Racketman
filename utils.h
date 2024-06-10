@@ -41,7 +41,7 @@ int qtdMosquitos[][3] = {
 	0, 1, 9,
 	0, 0,10
 };
-GLuint textureID[40];
+GLuint textureID[50];
 
 enum Entidades{
 	BLOCO    = 1,
@@ -75,30 +75,28 @@ enum Texturas{
 	T_TENIS,
 	T_RAQUETEBONUS,
 	T_PORTA,
-	T_JOGADORMORRENDO
+	T_JOGADORMORRENDO,
+	T_MOSQUITOMORRENDO = 37
 };
 
 bool inteiro(int a){
 	return a % FPS == 0;
 }
 
-void desenhaTextura(int textura, float xi, float yi, float xf, float yf){
+void desenhaTextura(int textura, float xi, float yi, float xf, float yf, bool espelha = false){
 	glBindTexture(GL_TEXTURE_2D, textureID[textura]);
 	glBegin(GL_QUADS);
-		glTexCoord2f(0.0f, 0.0f); glVertex2f(xi, yf);
-		glTexCoord2f(1.0f, 0.0f); glVertex2f(xf, yf);
-		glTexCoord2f(1.0f, 1.0f); glVertex2f(xf, yi);
-		glTexCoord2f(0.0f, 1.0f); glVertex2f(xi, yi);
-    glEnd();
-}
-
-void desenhaTexturaEspelhado(int textura, float xi, float yi, float xf, float yf){
-	glBindTexture(GL_TEXTURE_2D, textureID[textura]);
-	glBegin(GL_QUADS);
-		glTexCoord2f(0.0f, 0.0f); glVertex2f(xf, yf);
-		glTexCoord2f(1.0f, 0.0f); glVertex2f(xi, yf);
-		glTexCoord2f(1.0f, 1.0f); glVertex2f(xi, yi);
-		glTexCoord2f(0.0f, 1.0f); glVertex2f(xf, yi);
+		if(espelha){
+			glTexCoord2f(0.0f, 0.0f); glVertex2f(xf, yf);
+			glTexCoord2f(1.0f, 0.0f); glVertex2f(xi, yf);
+			glTexCoord2f(1.0f, 1.0f); glVertex2f(xi, yi);
+			glTexCoord2f(0.0f, 1.0f); glVertex2f(xf, yi);
+		}else{
+			glTexCoord2f(0.0f, 0.0f); glVertex2f(xi, yf);
+			glTexCoord2f(1.0f, 0.0f); glVertex2f(xf, yf);
+			glTexCoord2f(1.0f, 1.0f); glVertex2f(xf, yi);
+			glTexCoord2f(0.0f, 1.0f); glVertex2f(xi, yi);
+		}
     glEnd();
 }
 

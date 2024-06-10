@@ -116,6 +116,7 @@ void InicializarTexturas () {
 	loadTexture("imagens/raquetebonus.png", T_RAQUETEBONUS);
 	loadTexture("imagens/porta.png", T_PORTA);
 	carregaLista("imagens/jogadorMorrendo_.png", T_JOGADORMORRENDO, 3);
+	carregaLista("imagens/mosquitoMorrendo_.png", T_MOSQUITOMORRENDO, 4);
 }
 
 void Teclado(unsigned char key, int x, int y)

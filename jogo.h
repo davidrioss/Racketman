@@ -235,20 +235,25 @@ class Jogo{
         // Movimenta mosquitos
         auto mosquito = mosquitos.begin();
         while(mosquito != mosquitos.end()){
-            mosquito->mover(mapa);
-
-            // Colisão com o player
-            if(abs(mosquito->x - player.x) < FPS && abs(mosquito->y - player.y) < FPS)
-                morreu();
-            
-            // Colisão com a explosão
-            if(mapa.getPosMov(mosquito->x, mosquito->y) & EXPLOSAO){
-                pontos += mosquito->pontos();
-                mosquito->matar(mapa);
+            if(mosquito->mover(mapa)){
                 mosquito = mosquitos.erase(mosquito);
-            }else{
-                mosquito++;
+                continue;
             }
+
+            if(mosquito->vivo){
+                // Colisão com o player
+                if(abs(mosquito->x - player.x) < FPS && abs(mosquito->y - player.y) < FPS)
+                    morreu();
+                
+                // Colisão com a explosão
+                if(mapa.getPosMov(mosquito->x, mosquito->y) & EXPLOSAO){
+                    pontos += mosquito->pontos();
+                    mosquito->vivo = false;
+                    mosquito->framesAnimacao = 15;
+                }
+            }
+            
+            mosquito++;
         }
 
         if(mosquitos.empty()){

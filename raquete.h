@@ -56,4 +56,12 @@ class Raquete{
         });
         return false;
     }
+
+    void desenha(){
+        if(frames < 0)
+            return;
+        float s = 0.95 + cos(frames * M_PI / (FPS / 3)) * 0.05;
+        float d = (1 - s) / 2;
+        desenhaTexturaQuadrado(T_RAQUETE, x + d, y + d, s);
+    }
 };

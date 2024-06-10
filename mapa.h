@@ -89,9 +89,6 @@ class Mapa{
                 if(grid[i][j] & BOTA){
                     desenhaTextura(T_TENIS, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
                 }
-                if(grid[i][j] & RAQUETE){
-                    desenhaTextura(T_RAQUETE, i, j, i + 1, j + 1);
-                }
                 if(grid[i][j] & EXPLOSAO){
                     desenhaTextura(T_RAIO, i, j, i + 1, j + 1);
                 }

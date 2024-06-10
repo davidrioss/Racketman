@@ -133,6 +133,8 @@ class Jogo{
         desenhaVidas();
         desenhaPontuacao(true, mapa.colunas - 3.3f, mapa.linhas - 1.0f);
 
+        for(auto &raquete : player.raquetes)
+            raquete.desenha();
         for(auto &mosquito : mosquitos)
 		    mosquito.desenha();
         player.desenha();

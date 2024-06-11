@@ -1,24 +1,15 @@
 #pragma once
 
-enum Audios{
-	A_MENU,
-	A_GAMEOVER,
-	A_JOGO,
-	A_CHOCK
-};
-
+#define NUM_AUDIOS 3
 #ifndef SEMAUDIO
-#define NUM_AUDIOS 4
 #define MINIAUDIO_IMPLEMENTATION
 #include "include/miniaudio.h"
 typedef struct {
     ma_decoder decoder;
     ma_device device;
-    bool tocando;
 } AudioPlayer;
 
 AudioPlayer audioPlayers[NUM_AUDIOS];
-
 
 void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount) {
     ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
@@ -31,8 +22,7 @@ void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uin
     (void)pInput;
 }
 
-void initAudio(Audios audio, const char* filepath, ma_device_type type) {
-    AudioPlayer *player = audioPlayers + audio;
+void initAudio(AudioPlayer* player, const char* filepath) {
     ma_result result;
 
     result = ma_decoder_init_file(filepath, NULL, &player->decoder);
@@ -42,7 +32,7 @@ void initAudio(Audios audio, const char* filepath, ma_device_type type) {
     }
 
     ma_device_config deviceConfig;
-    deviceConfig = ma_device_config_init(type);
+    deviceConfig = ma_device_config_init(ma_device_type_playback);
     deviceConfig.playback.format   = player->decoder.outputFormat;
     deviceConfig.playback.channels = player->decoder.outputChannels;
     deviceConfig.sampleRate        = player->decoder.outputSampleRate;
@@ -57,26 +47,19 @@ void initAudio(Audios audio, const char* filepath, ma_device_type type) {
     }
 }
 
-void startAudio(Audios audio, bool loop) {
-    if(!audioPlayers[audio].tocando){
-        ma_device_start(&audioPlayers[audio].device);
-        audioPlayers[audio].tocando = loop;
-    }
+void startAudio(AudioPlayer* player) {
+    ma_device_start(&player->device);
 }
 
-void stopAudio(Audios audio) {
-    if(audioPlayers[audio].tocando){
-        ma_device_stop(&audioPlayers[audio].device);
-        audioPlayers[audio].tocando = false;
-    }
+void stopAudio(AudioPlayer* player) {
+    ma_device_stop(&player->device);
 }
 
 void initializeAudios() {
     // Inicialize os diferentes áudios
-    initAudio(A_MENU, "audios/menu.mp3", ma_device_type_loopback);
-    initAudio(A_GAMEOVER, "audios/gameover.mp3", ma_device_type_loopback);
-    initAudio(A_JOGO, "audios/game.mp3", ma_device_type_loopback);
-    initAudio(A_CHOCK, "audios/shock.mp3", ma_device_type_playback);
+    initAudio(&audioPlayers[0], "audios/menu.mp3");
+    initAudio(&audioPlayers[1], "audios/gameover.mp3");
+    initAudio(&audioPlayers[2], "audios/game.mp3");
 }
 
 void cleanupAudios() {
@@ -86,8 +69,11 @@ void cleanupAudios() {
     }
 }
 #else
-void startAudio(Audios audio, bool loop){}
-void stopAudio(Audios audio){}
+typedef int AudioPlayer;
+AudioPlayer audioPlayers[NUM_AUDIOS];
+void initAudio(AudioPlayer* player, const char* filepath){}
+void startAudio(AudioPlayer* player){}
+void stopAudio(AudioPlayer* player){}
 void initializeAudios(){}
 void cleanupAudios(){}
 #endif

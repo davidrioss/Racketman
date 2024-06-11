@@ -123,9 +123,9 @@ class Jogo{
     }
 
     void desenha(){
-		stopAudio(A_MENU);
-		stopAudio(A_GAMEOVER);
-		startAudio(A_JOGO, true);
+		stopAudio(&audioPlayers[0]);
+		stopAudio(&audioPlayers[1]);
+		startAudio(&audioPlayers[2]);
 
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -175,7 +175,7 @@ class Jogo{
         // Atualiza as raquetes
         bool removido = false;
         auto it = player.raquetes.begin();
-        bool comecouExplosao = false;
+        bool cadeia = false;
         while(it != player.raquetes.end()){
             if(it->atualiza(mapa)){ // Terminou a explosão
                 it = player.raquetes.erase(it);
@@ -184,21 +184,17 @@ class Jogo{
                 continue;
             }
             if(it->frames == 0) // Começou uma explosao
-                comecouExplosao = true;
+                cadeia = true;
             it++;
         }
 
-        if(comecouExplosao){
-            startAudio(A_CHOCK, false);
-        }
-
-        while(comecouExplosao){ // Sincroniza o inicio de todas as bombas em cadeia
-            comecouExplosao = false;
+        while(cadeia){ // Sincroniza o inicio de todas as bombas em cadeia
+            cadeia = false;
             for(auto &raquete : player.raquetes){
                 if(raquete.frames > 0 && (mapa.getPos(raquete.x, raquete.y) & EXPLOSAO)){
                     raquete.frames = 1;
                     raquete.atualiza(mapa);
-                    comecouExplosao = true;
+                    cadeia = true;
                 }
             }
         }

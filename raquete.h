@@ -37,6 +37,7 @@ class Raquete{
             atualizaRaio(mapa, [&mapa](int x, int y){
                 auto a = mapa.getPos(x, y);
                 if(!(a & EXPLOSAO)){
+                    mapa.removePos(x, y, VAIEXPLO);
                     return;
                 }
                 if(a & PAREDE)

@@ -252,6 +252,7 @@ class Jogo{
         auto mosquito = mosquitos.begin();
         while(mosquito != mosquitos.end()){
             if(mosquito->mover(mapa)){
+                mosquito->matar(mapa);
                 mosquito = mosquitos.erase(mosquito);
                 continue;
             }

@@ -43,7 +43,7 @@ class Raquete{
                 if(a & PAREDE)
                     mapa.removePos(x, y, EXPLOSAO | PAREDE | VAIEXPLO);
                 else
-                    mapa.grid[x][y] = 0;
+                    mapa.removePos(x, y, ~MOSQUITO);
             });
             return true;
         }

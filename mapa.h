@@ -62,36 +62,42 @@ class Mapa{
 		grid[x][y] &= ~e;
 	}
 
+    void desenhaDebug(int i, int j){
+    }
+
     void desenha(){
         for(int i = 0; i < colunas; i++){
             for(int j = 0; j < linhas; j++){
                 if(grid[i][j] & BLOCO){
                     desenhaTextura(T_PEDRA, i, j, i + 1, j + 1);
-                    continue;
                 }else if(grid[i][j] & PAREDE){
                     desenhaTextura(T_PAREDE, i, j, i + 1, j + 1);
-                    continue;
+                }else{
+                    desenhaTextura(T_GRAMA, i, j, i + 1, j + 1);
+                    if(grid[i][j] & PORTA){
+                        desenhaTextura(T_PORTA, i, j, i + 1, j + 1);
+                    }
+                    if(grid[i][j] & VIDA){
+                        desenhaTextura(T_CORACAO, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
+                    }
+                    if(grid[i][j] & RAQPODER){
+                        desenhaTextura(T_BATERIA, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
+                    }
+                    if(grid[i][j] & RAQBONUS){
+                        desenhaTextura(T_RAQUETEBONUS, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
+                    }
+                    if(grid[i][j] & BOTA){
+                        desenhaTextura(T_TENIS, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
+                    }
+                    if(grid[i][j] & EXPLOSAO){
+                        desenhaTextura(T_RAIO, i, j, i + 1, j + 1);
+                    }
                 }
-
-                desenhaTextura(T_GRAMA, i, j, i + 1, j + 1);
-                if(grid[i][j] & PORTA){
-                    desenhaTextura(T_PORTA, i, j, i + 1, j + 1);
-                }
-                if(grid[i][j] & VIDA){
-                    desenhaTextura(T_CORACAO, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
-                }
-                if(grid[i][j] & RAQPODER){
-                    desenhaTextura(T_BATERIA, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
-                }
-                if(grid[i][j] & RAQBONUS){
-                    desenhaTextura(T_RAQUETEBONUS, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
-                }
-                if(grid[i][j] & BOTA){
-                    desenhaTextura(T_TENIS, i + 0.1f, j + 0.1f, i + 0.9f, j + 0.9f);
-                }
-                if(grid[i][j] & EXPLOSAO){
-                    desenhaTextura(T_RAIO, i, j, i + 1, j + 1);
-                }
+#ifdef DEBUG
+                int entidades = __builtin_popcount(grid[i][j] & ~(BLOCO | PAREDE));
+                if(entidades)
+                    desenhaNumero(entidades, i, j, 0.5);
+#endif
             }
         }
     }

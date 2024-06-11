@@ -46,14 +46,14 @@ class Mapa{
 	}
 
 	int getPosMov(int x, int y){
-        int i = x / FPS, j = y / FPS;
+        int i = x / UNIDADE, j = y / UNIDADE;
 		if(!inteiro(x))
 			return getPos(i, j) | getPos(i + 1, j);
 		if(!inteiro(y))
 			return getPos(i, j) | getPos(i, j + 1);
 		return getPos(i, j);
 	}
-
+    
 	void setPos(int x, int y, int e){
 		grid[x][y] |= e;
 	}

@@ -1,6 +1,7 @@
 #pragma once
 
-#define FPS 60
+#define FPS     60 // taxa de atualização da tela
+#define UNIDADE 60 // 1 unidade de espaço/tempo
 
 #include "audio.h"
 
@@ -82,7 +83,7 @@ enum Texturas{
 };
 
 bool inteiro(int a){
-	return a % FPS == 0;
+	return a % UNIDADE == 0;
 }
 
 void desenhaTextura(int textura, float xi, float yi, float xf, float yf, bool espelha = false){

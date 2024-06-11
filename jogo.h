@@ -27,13 +27,13 @@ class Jogo{
         mosquitos = std::list<Mosquito>();
         int v = minimo(fase / 2, VELOCIDADEMAX);
         while(m1--)
-            mosquitos.emplace_back(v, 0, mapa);
+            mosquitos.emplace_back(v, PRETO, mapa);
         v = minimo((fase - 2) / 2, VELOCIDADEMAX);
         while(m2--)
-            mosquitos.emplace_back(v, 1, mapa);
+            mosquitos.emplace_back(v, VERDE, mapa);
         v = minimo((fase - 5) / 2, VELOCIDADEMAX);
         while(m3--)
-            mosquitos.emplace_back(v, 2, mapa);
+            mosquitos.emplace_back(v, VERMELHO, mapa);
 	}
 
     void revivePlayer(){
@@ -217,7 +217,7 @@ class Jogo{
         if(a & EXPLOSAO)
             morreu();
 
-        int x = player.x / FPS, y = player.y / FPS;
+        int x = player.x / UNIDADE, y = player.y / UNIDADE;
         if(!inteiro(player.x)){
             if(x % 2 == 0)
                 x++;
@@ -236,9 +236,9 @@ class Jogo{
                         continue;
                     
                     for(auto &mosquito : mosquitos){
-                        int dx = mosquito.x - i * FPS;
-                        int dy = mosquito.y - j * FPS;
-                        if((dx > -FPS && dx < FPS) && (dy > -FPS && dy < FPS)){
+                        int dx = mosquito.x - i * UNIDADE;
+                        int dy = mosquito.y - j * UNIDADE;
+                        if((dx > -UNIDADE && dx < UNIDADE) && (dy > -UNIDADE && dy < UNIDADE)){
                             mosquito.viuPlayer(x, y, i, j, k);
                             break;
                         }
@@ -259,7 +259,7 @@ class Jogo{
 
             if(mosquito->vivo){
                 // Colisão com o player
-                if(abs(mosquito->x - player.x) < FPS && abs(mosquito->y - player.y) < FPS)
+                if(abs(mosquito->x - player.x) < UNIDADE && abs(mosquito->y - player.y) < UNIDADE)
                     morreu();
                 
                 // Colisão com a explosão

@@ -8,10 +8,7 @@
 
 class Player{
 	public:
-	int x;
-	int y;
-	int dx;
-	int dy;
+	int x, y, dx, dy; // Coordenadas vezes UNIDADES de espaço
 	int velocidade;
     int potenciaDaRaquete;
     int numRaquetes;
@@ -19,7 +16,7 @@ class Player{
 	bool vivo;
 	bool espelha;
     std::list<Raquete> raquetes{};
-	int framesProximo;
+	int framesProximo;  // Frames em que aceita colocar a raquete ainda
 	int framesAnimacao;
 
 	Player(){
@@ -36,8 +33,8 @@ class Player{
 	}
 
 	void setaPos(int nx, int ny){
-		x = nx * FPS;
-		y = ny * FPS;
+		x = nx * UNIDADE;
+		y = ny * UNIDADE;
 		dx = 0;
 		dy = 0;
 		vivo = true;
@@ -49,21 +46,21 @@ class Player{
 	}
 
 	void colocaRaquete(Mapa &mapa, bool botao){
-		int i = x / FPS, j = y / FPS;
+		int i = x / UNIDADE, j = y / UNIDADE;
 		if(!vivo || movendo() || numRaquetes == 0 || mapa.getPos(i, j) & RAQUETE){
 			if(botao)
-				framesProximo = FPS / 6;
+				framesProximo = UNIDADE / 6; // Se não pode colcar a raquete, tenta colocar novamente nos proximos frames
 			return;
 		}
 		
 		mapa.setPos(i, j, RAQUETE);
-		raquetes.emplace_back(i, j, potenciaDaRaquete, 3 * FPS, mapa);
+		raquetes.emplace_back(i, j, potenciaDaRaquete, 3 * UNIDADE, mapa);
 		numRaquetes--;
 		framesProximo = 0;
 	}
 
 	void comecaMovimento(int ndx, int ndy, Mapa &mapa){
-		int i = x / FPS, j = y / FPS;
+		int i = x / UNIDADE, j = y / UNIDADE;
         if(!vivo || movendo() || mapa.getPos(i + ndx, j + ndy) & (BLOCO | PAREDE | RAQUETE))
             return;
 		
@@ -91,7 +88,7 @@ class Player{
 			framesAnimacao = 0;
 			dx = 0;
 			dy = 0;
-			int i = x / FPS, j = y / FPS;
+			int i = x / UNIDADE, j = y / UNIDADE;
 			auto a = mapa.getPos(i, j);
 			if(a & VIDA){
 				if(vidas < VIDAMAX)
@@ -128,8 +125,8 @@ class Player{
 	}
 
 	void desenha(){
-		float X = (float) x / FPS;
-		float Y = (float) y / FPS;
+		float X = (float) x / UNIDADE;
+		float Y = (float) y / UNIDADE;
 		int t;
 		if(!vivo){
 			if(framesAnimacao == 0)

@@ -9,7 +9,7 @@ class Raquete{
 	int x;
     int y;
     int raio;
-    int frames;
+    int frames; // Frames até a explosão
 
     Raquete(int x, int y, int raio, int frames, Mapa &mapa) : x(x), y(y), raio(raio), frames(frames){
         atualizaRaio(mapa, [&mapa](int x, int y){
@@ -32,7 +32,7 @@ class Raquete{
 
     bool atualiza(Mapa &mapa){
         // Limpa explosão
-        if(--frames == -FPS / 4){
+        if(--frames == -UNIDADE / 4){
             mapa.grid[x][y] = 0;
             atualizaRaio(mapa, [&mapa](int x, int y){
                 auto a = mapa.getPos(x, y);
@@ -62,7 +62,7 @@ class Raquete{
     void desenha(){
         if(frames < 0)
             return;
-        float s = 0.95 + cos(frames * M_PI / (FPS / 3)) * 0.05;
+        float s = 0.95 + cos(frames * M_PI / (UNIDADE / 3)) * 0.05;
         float d = (1 - s) / 2;
         desenhaTexturaQuadrado(T_RAQUETE, x + d, y + d, s);
     }

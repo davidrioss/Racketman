@@ -347,9 +347,9 @@ void DesenhaBotaoDoCanto(){
 }
 
 void DesenhaMenu(){
-	stopAudio(&audioPlayers[1]);
-	stopAudio(&audioPlayers[2]);
-	startAudio(&audioPlayers[0]);
+	stopAudio(A_GAMEOVER);
+	stopAudio(A_JOGO);
+	startAudio(A_MENU, true);
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	desenhaTextura(T_MENU, 0.0f, 0.0f, 15.0f, 15.0f);
@@ -358,9 +358,9 @@ void DesenhaMenu(){
 }
 
 void DesenhaGameover(){
-	stopAudio(&audioPlayers[0]);
-	stopAudio(&audioPlayers[2]);
-	startAudio(&audioPlayers[1]);
+	stopAudio(A_MENU);
+	stopAudio(A_JOGO);
+	startAudio(A_GAMEOVER, true);
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	desenhaTextura(T_GAMEOVER, 0.0f, 0.0f, 15.0f, 15.0f);
